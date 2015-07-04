@@ -39,7 +39,7 @@ namespace Glow
             await socket.ConnectAsync(name, "22112");
             DataWriter writer = new DataWriter(socket.OutputStream);
             Command cmd = new Command();
-            cmd.test = "hahahahaha";
+            //cmd.test = "hahahahaha";
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(cmd);
             writer.WriteUInt32((uint)json.Length);
             writer.WriteString(json);

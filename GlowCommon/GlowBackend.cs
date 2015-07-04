@@ -8,6 +8,7 @@ namespace GlowCommon
 {
     public enum GlowPrograms
     {
+        GlowControl = 0,
         ManualColors,
         Clock,
         Weather,

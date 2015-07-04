@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlowCommon.DataObjects;
 using GlowPi.Interfaces;
 
 namespace GlowPi.Programs
@@ -24,7 +25,12 @@ namespace GlowPi.Programs
             throw new NotImplementedException();
         }
 
-        public void DoWork()
+        public void DoWork(uint timeElaspedMs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CommandRecieved(Command command)
         {
             throw new NotImplementedException();
         }

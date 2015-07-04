@@ -32,9 +32,13 @@ namespace GlowPi
         DateTime m_lastWorkTime;
 
         // Program logic
-        List<IProgram> m_programs = new List<IProgram>();
-        GlowPrograms m_currentProgram = GlowPrograms.None;
-        GlowPrograms m_newProgram = GlowPrograms.Clock;
+
+        // This dictionary is used to hold all of the programs we know of
+        Dictionary<GlowPrograms, IProgram> m_programCache = new Dictionary<GlowPrograms, IProgram>();
+        // This dictionary is used to hold all of the active programs.
+        Dictionary<GlowPrograms, IProgram> m_activePrograms = new Dictionary<GlowPrograms, IProgram>();
+        // This list holds all modifications to the program list
+        List<KeyValuePair<GlowPrograms, bool>> m_programModifications = new List<KeyValuePair<GlowPrograms, bool>>();
 
         // The main entry point for glow smarts.
         public void Run()
@@ -42,16 +46,26 @@ namespace GlowPi
             // Create the LED controller
             m_ledController = new LedController();
 
-            // Create the programs, note these must match the order of the enum.
-            m_programs.Add(new ManualColor());
-            m_programs.Add(new Clock());
-            m_programs.Add(new Weather());
-            m_programs.Add(new WeatherCam());
+            // Create all of the programs and add them to the cache.
+            IProgram program = new GlowControl();
+            program.InitProgram(this);
+            m_programCache.Add(GlowPrograms.GlowControl, program);
 
-            m_programs[0].InitProgram(this);
-            m_programs[1].InitProgram(this);
-            m_programs[2].InitProgram(this);
-            m_programs[3].InitProgram(this);
+            program = new ManualColor();
+            program.InitProgram(this);
+            m_programCache.Add(GlowPrograms.ManualColors, program);
+
+            program = new Clock();
+            program.InitProgram(this);
+            m_programCache.Add(GlowPrograms.Clock, program);
+
+            program = new Weather();
+            program.InitProgram(this);
+            m_programCache.Add(GlowPrograms.Weather, program);
+
+            program = new WeatherCam();
+            program.InitProgram(this);
+            m_programCache.Add(GlowPrograms.WeatherCam, program);
 
             // Create a command listener
             m_commandServer = new CommandServer(this);
@@ -75,6 +89,33 @@ namespace GlowPi
             }
         }
 
+        // Called from the programs to get leds
+        public AnimatedLed GetLed(int ledNumber)
+        {
+            return m_ledController.GetLed(ledNumber);
+        }
+
+        // Called from the programs to change the work callback rate
+        public void SetWorkRate(uint workRateMs)
+        {
+            m_workRateMs = workRateMs;
+        }
+
+        // Called from the glow control when a program should be added or removed.
+        public void ToggleProgram(GlowPrograms program, bool enable)
+        {
+            lock(m_programModifications)
+            {
+                // Add it to the list of pending changes, this will be updated on the next tick.
+                m_programModifications.Add(new KeyValuePair<GlowPrograms, bool>(program, enable));
+            }
+        }
+
+        public bool IsProgramEnabled(GlowPrograms program)
+        {
+            return m_activePrograms.ContainsKey(program);
+        }
+
         // The main work loop.
         private void WorkLoop()
         {
@@ -94,23 +135,25 @@ namespace GlowPi
                     }
 
                     // 2: See if we need to change programs
-                    if(m_currentProgram != m_newProgram)
+                    if (m_programModifications.Count > 0)
                     {
-                        // We need to change programs, first kill the old one.
-                        if(m_currentProgram != GlowPrograms.None)
-                        {
-                            m_programs[(int)m_currentProgram].Deactivate();
-                        }
+                        // We need to change up some programs.
+                        HandelProgramChanges();
+                    }
+       
 
-                        // Now we need to activate the new one
-                        m_currentProgram = m_newProgram;
-                        m_programs[(int)m_currentProgram].Activate();
+                    // 3: Let all of the programs do work.
+                    lock(m_activePrograms)
+                    {
+                        foreach(KeyValuePair<GlowPrograms, IProgram> program in m_activePrograms)
+                        {
+                            TimeSpan workTimeDiff = DateTime.Now - m_lastWorkTime;
+                            program.Value.DoWork((uint)workTimeDiff.TotalMilliseconds);
+                        }
                     }
 
-                    // 3: Let the program do work
-                    
-                    TimeSpan workTimeDiff = DateTime.Now - m_lastWorkTime;
-                    m_programs[(int)m_currentProgram].DoWork((uint)workTimeDiff.TotalMilliseconds);
+                    // Update the last work time
+                    m_lastWorkTime = DateTime.Now;
 
                     // 4: Sleep
                     int sleepTime =  (int)m_workRateMs - (int)(DateTime.Now - begin).TotalMilliseconds;
@@ -126,16 +169,68 @@ namespace GlowPi
             }
         }
 
-        // Called from the programs to get leds
-        public AnimatedLed GetLed(int ledNumber)
+        private void HandelProgramChanges()
         {
-            return m_ledController.GetLed(ledNumber);
+            // First lock the list
+            lock (m_programModifications)
+            {
+                // Loop through all of the changes.
+                foreach(KeyValuePair<GlowPrograms, bool> change in m_programModifications)
+                {
+                    if(change.Value)
+                    {
+                        // We are adding a program= make sure it isn't already active.
+                        lock(m_activePrograms)
+                        {
+                            if(m_activePrograms.ContainsKey(change.Key))
+                            {
+                                // The program is already active, continue.
+                                break;
+                            }
+                        }
+
+                        // Now activate it
+                        IProgram addProgram = m_programCache[change.Key];
+                        addProgram.Activate();
+
+                        // And add it to the list.
+                        lock(m_activePrograms)
+                        {
+                            m_activePrograms.Add(change.Key, addProgram);
+                        }
+                    }
+                    else
+                    {
+                        // We are removing a program, make sure it exists
+                        lock (m_activePrograms)
+                        {
+                            if (!m_activePrograms.ContainsKey(change.Key))
+                            {
+                                // The program already doesn't exist
+                                break;
+                            }
+                        }
+
+                        // Deactivate it
+                        IProgram addProgram = m_programCache[change.Key];
+                        addProgram.Deactivate();
+
+                        // Remove it
+                        lock (m_activePrograms)
+                        {
+                            m_activePrograms.Remove(change.Key);
+                        }
+                    }
+                }
+
+                // Empty the list
+                m_programModifications.Clear();
+            }
         }
 
-        // Called from the programs to change the work callback rate
-        public void SetWorkRate(uint workRateMs)
+        public void SendCommand(Command command)
         {
-            m_workRateMs = workRateMs;
+            // #todo implement
         }
     }
 }

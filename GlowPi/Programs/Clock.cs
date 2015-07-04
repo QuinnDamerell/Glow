@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlowCommon.DataObjects;
 using GlowPi.Interfaces;
 using WindowsIotLedDriver;
 
@@ -11,6 +12,7 @@ namespace GlowPi.Programs
     class Clock : IProgram
     {
         IProgramController m_controller;
+        ClockSettings m_settings = new ClockSettings();
 
         public void InitProgram(IProgramController controller)
         {
@@ -31,8 +33,10 @@ namespace GlowPi.Programs
             // Do nothing for deactivate
         }
 
-        public void DoWork()
+        public void DoWork(uint timeElaspedMs)
         {
+            System.Diagnostics.Debug.WriteLine("Clock do work");
+
             // Get the time now. 
             DateTime now = DateTime.Now;
 
@@ -48,6 +52,23 @@ namespace GlowPi.Programs
             m_controller.GetLed(1).Animate(hours, hours, hours, 1.0, new TimeSpan(0, 0, 1), AnimationType.Linear);
             m_controller.GetLed(2).Animate(minutes, minutes, minutes, 1.0, new TimeSpan(0, 0, 1), AnimationType.Linear);
             m_controller.GetLed(3).Animate(seconds, seconds, seconds, 1.0, new TimeSpan(0, 0, 0, 0, 500), AnimationType.Linear);
+        }
+
+        public void CommandRecieved(Command command)
+        {
+            switch(command.MessageId)
+            {
+                case Command.COMMAND_GET_SETTINGS:
+                    {
+                        // Send the settings
+                        Command settingsCommand = new Command();
+                        settingsCommand.MessageId = Command.COMMAND_RECIEVE_SETTINGS;
+                        settingsCommand.Program = GlowCommon.GlowPrograms.Clock;
+                        settingsCommand.Message = Newtonsoft.Json.JsonConvert.SerializeObject(m_settings);
+                        m_controller.SendCommand(settingsCommand);
+                        break;
+                    }
+            }
         }
     }
 }

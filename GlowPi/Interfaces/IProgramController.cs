@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WindowsIotLedDriver;
+using GlowCommon;
+using GlowCommon.DataObjects;
 
 namespace GlowPi.Interfaces
 {
@@ -12,5 +14,11 @@ namespace GlowPi.Interfaces
         AnimatedLed GetLed(int ledNumber);
 
         void SetWorkRate(uint workRateMs);
+
+        void ToggleProgram(GlowPrograms program, bool enable);
+
+        bool IsProgramEnabled(GlowPrograms program);
+
+        void SendCommand(Command command);
     }
 }

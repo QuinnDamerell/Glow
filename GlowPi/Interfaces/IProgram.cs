@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlowCommon.DataObjects;
 
 namespace GlowPi.Interfaces
 {
@@ -19,5 +20,11 @@ namespace GlowPi.Interfaces
         /// </summary>
         /// <param name="timeElaspedMs">time elasped since the last call</param>
         void DoWork(uint timeElaspedMs);
+
+        /// <summary>
+        /// Called when a command has been received for the program.
+        /// </summary>
+        /// <param name="command">The recieved commands</param>
+        void CommandRecieved(Command command);
     }
 }
