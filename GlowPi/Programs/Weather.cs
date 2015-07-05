@@ -30,9 +30,9 @@ namespace GlowPi.Programs
             System.Diagnostics.Debug.WriteLine("Weather do work");
         }
 
-        public void CommandRecieved(Command command)
+        public Command CommandRecieved(Command command)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

@@ -6,6 +6,22 @@ using System.Threading.Tasks;
 
 namespace GlowCommon
 {
+    public class SerlizableLed
+    {
+        public double Red = 0.0;
+        public double Green = 0.0;
+        public double Blue = 0.0;
+        public double Intensity = 0.0;
+
+        public SerlizableLed(double red, double green, double blue, double intensity)
+        {
+            Red = red;
+            Green = green;
+            Blue = blue;
+            Intensity = intensity;
+        }
+    }
+
     public enum GlowPrograms
     {
         GlowControl = 0,

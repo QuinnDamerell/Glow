@@ -54,7 +54,7 @@ namespace GlowPi.Programs
             m_controller.GetLed(3).Animate(seconds, seconds, seconds, 1.0, new TimeSpan(0, 0, 0, 0, 500), AnimationType.Linear);
         }
 
-        public void CommandRecieved(Command command)
+        public Command CommandRecieved(Command command)
         {
             switch(command.MessageId)
             {
@@ -65,10 +65,10 @@ namespace GlowPi.Programs
                         settingsCommand.MessageId = Command.COMMAND_RECIEVE_SETTINGS;
                         settingsCommand.Program = GlowCommon.GlowPrograms.Clock;
                         settingsCommand.Message = Newtonsoft.Json.JsonConvert.SerializeObject(m_settings);
-                        m_controller.SendCommand(settingsCommand);
-                        break;
+                        return settingsCommand;
                     }
             }
+            return null;
         }
     }
 }

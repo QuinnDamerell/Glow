@@ -112,7 +112,9 @@
     <Compile Include="CommandServer.cs" />
     <Compile Include="DataObjects\ClockSettings.cs" />
     <Compile Include="DataObjects\Command.cs" />
+    <Compile Include="DataObjects\Commands\ManualColorCommands.cs" />
     <Compile Include="DataObjects\GlowControlSettings.cs" />
+    <Compile Include="DataObjects\ManualColorSettings.cs" />
     <Compile Include="GlowBackend.cs" />
     <Compile Include="Interfaces\ICommandListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,6 +8,111 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="12">
+            <TextBlock x:Name="u_StatusText" Text="Status: None" Margin="0,12"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="u_ConnectionIp" Text="192.168.1.104" MinWidth="150" Margin="0,0,12,0"/>
+                <Button Content="Connect" Click="Button_Click"/>
+            </StackPanel>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled">
+            <StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*" MaxWidth="400"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led1"/>
+                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led1r" ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led1g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led1b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led1i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
+                </Grid>
+                <Grid Background="#22000000">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*" MaxWidth="400"/>
+                    </Grid.ColumnDefinitions>
 
+                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led2"/>
+                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led2r" ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led2g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led2b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led2i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*" MaxWidth="400"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led3"/>
+                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led3r" ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led3g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led3b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led3i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
+                </Grid>
+                <Grid Background="#22000000">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*" MaxWidth="400"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led4"/>
+                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led4r" ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led4g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led4b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led4i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*" MaxWidth="400"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led5"/>
+                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led5r" ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led5g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led5b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
+                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led5i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

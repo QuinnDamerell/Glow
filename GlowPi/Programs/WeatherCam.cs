@@ -30,9 +30,9 @@ namespace GlowPi.Programs
             throw new NotImplementedException();
         }
 
-        public void CommandRecieved(Command command)
+        public Command CommandRecieved(Command command)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

@@ -18,7 +18,5 @@ namespace GlowPi.Interfaces
         void ToggleProgram(GlowPrograms program, bool enable);
 
         bool IsProgramEnabled(GlowPrograms program);
-
-        void SendCommand(Command command);
     }
 }

@@ -20,7 +20,6 @@ namespace GlowPi
 
         // Command logic
         CommandServer m_commandServer;
-        List<Command> m_commands = new List<Command>();
 
         // Led Logic
         LedController m_ledController;
@@ -69,7 +68,7 @@ namespace GlowPi
 
             // Create a command listener
             m_commandServer = new CommandServer(this);
-            m_commandServer.Setup(22112);
+            m_commandServer.Setup(CommandServer.GLOW_SERVER_PORT);
 
             // Setup the main worker thread.
             m_continueWorking = true;
@@ -79,14 +78,27 @@ namespace GlowPi
         }
 
         // Fired when a new command has arrived.
-        public void OnCommand(Command command)
+        // If a command is returned it will be sont back.
+        public Command OnCommand(Command command)
         {
-            // Add the command to the command list. This will be take care of in the 
-            // main work loop.
-            lock(m_commands)
+            // Make sure we have the program
+            if(!m_programCache.ContainsKey(command.Program))
             {
-                m_commands.Add(command);
+                return null;
             }
+
+            // Check the version is current
+            if(command.Version != Command.COMMAND_VERSION)
+            {
+                System.Diagnostics.Debug.WriteLine("A old message was thrown away.");
+                return null;
+            }
+
+            // Get the program
+            IProgram program = m_programCache[command.Program];
+
+            // Send the commands
+            return program.CommandRecieved(command);
         }
 
         // Called from the programs to get leds
@@ -125,16 +137,7 @@ namespace GlowPi
                 {
                     DateTime begin = DateTime.Now;
 
-                    // 1: See if there are any commands we should service
-                    lock (m_commands)
-                    {
-                        if(m_commands.Count > 0)
-                        {
-                            // #todo handle commands
-                        }
-                    }
-
-                    // 2: See if we need to change programs
+                    // 1: See if we need to change programs
                     if (m_programModifications.Count > 0)
                     {
                         // We need to change up some programs.
@@ -142,7 +145,7 @@ namespace GlowPi
                     }
        
 
-                    // 3: Let all of the programs do work.
+                    // 2: Let all of the programs do work.
                     lock(m_activePrograms)
                     {
                         foreach(KeyValuePair<GlowPrograms, IProgram> program in m_activePrograms)
@@ -155,7 +158,7 @@ namespace GlowPi
                     // Update the last work time
                     m_lastWorkTime = DateTime.Now;
 
-                    // 4: Sleep
+                    // 3: Sleep
                     int sleepTime =  (int)m_workRateMs - (int)(DateTime.Now - begin).TotalMilliseconds;
                     if(sleepTime > 0)
                     {
@@ -226,11 +229,6 @@ namespace GlowPi
                 // Empty the list
                 m_programModifications.Clear();
             }
-        }
-
-        public void SendCommand(Command command)
-        {
-            // #todo implement
         }
     }
 }

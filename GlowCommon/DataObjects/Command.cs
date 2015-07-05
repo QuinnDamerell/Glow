@@ -9,6 +9,8 @@ namespace GlowCommon.DataObjects
 {
     public class Command
     {
+        public const uint COMMAND_VERSION = 1;
+
         public const uint COMMAND_GET_SETTINGS = 300;
         public const uint COMMAND_RECIEVE_SETTINGS = 301;
 
@@ -26,6 +28,11 @@ namespace GlowCommon.DataObjects
         /// The actual command for the program.
         /// </summary>
         public string Message = "";
+
+        /// <summary>
+        /// Defines what version these commands are.
+        /// </summary>
+        public uint Version = COMMAND_VERSION;
 
         public Command()
         {}

@@ -12,6 +12,8 @@ namespace GlowCommon
 {
     public class CommandServer
     {
+        public const int GLOW_SERVER_PORT = 48593;
+
         //
         // Private Vars
         //
@@ -47,6 +49,7 @@ namespace GlowCommon
                 {
                     // Open the input stream
                     DataReader reader = new DataReader(args.Socket.InputStream);
+                    DataWriter writer = new DataWriter(args.Socket.OutputStream);
 
                     // Loop while we wait for messages.
                     while(true)
@@ -74,20 +77,43 @@ namespace GlowCommon
                         string commandString = reader.ReadString(stringLen);
 
                         // Deal with the string
-                        ParseStringAndSendCommand(commandString);
+                        Command response = ParseStringAndSendCommand(commandString);
+
+                        // Send the response if one was given.
+                        await SendResponse(writer, response);
                     }
                 }
                 catch(Exception e)
                 {
-
+                    System.Diagnostics.Debug.WriteLine("Socket Accept Fail: "+e.Message);
                 }
             });
             socketHandler.Start();
         }
 
-        private void ParseStringAndSendCommand(string commandString)
+        private Command ParseStringAndSendCommand(string commandString)
         {
             Command cmd = Newtonsoft.Json.JsonConvert.DeserializeObject<Command>(commandString);
+            return m_listener.OnCommand(cmd);
+        }
+
+        private async Task SendResponse(DataWriter writer, Command cmd)
+        {
+            if(cmd == null)
+            {
+                return;
+            }
+
+            if(cmd.Program == GlowPrograms.None)
+            {
+                throw new Exception("The program can't be none!");
+            }
+
+            // Serialize the cmd
+            string cmdJson = Newtonsoft.Json.JsonConvert.SerializeObject(cmd);
+            writer.WriteUInt32((uint)cmdJson.Length);
+            writer.WriteString(cmdJson);
+            await writer.FlushAsync();
         }
     }
 }

@@ -23,8 +23,9 @@ namespace GlowPi.Interfaces
 
         /// <summary>
         /// Called when a command has been received for the program.
+        /// If a command is returned it will be sent back to the sender.
         /// </summary>
         /// <param name="command">The recieved commands</param>
-        void CommandRecieved(Command command);
+        Command CommandRecieved(Command command);
     }
 }
