@@ -9,14 +9,14 @@ namespace GlowPi
 {
     class LedController
     {
-        PwmLedController m_controller;
+        TLC5947Controller m_controller;
         AnimatedLed[] m_leds;
 
         public LedController()
         {
             // Create the controller
-            //m_controller = new PwmLedController();
-            //m_controller.ToggleAnimation(true, false);
+            m_controller = new TLC5947Controller();
+            m_controller.ToggleAnimation(true);
 
             // Create the LED array
             m_leds = new AnimatedLed[5];
@@ -29,11 +29,11 @@ namespace GlowPi
             m_leds[4] = new AnimatedLed(LedType.RBG, true);
 
             // Associate the LEDs
-            //m_controller.AssoicateLed(0, m_leds[0].GetLed());
-            //m_controller.AssoicateLed(3, m_leds[1].GetLed());
-            //m_controller.AssoicateLed(6, m_leds[2].GetLed());
-            //m_controller.AssoicateLed(9, m_leds[3].GetLed());
-            //m_controller.AssoicateLed(12, m_leds[4].GetLed());
+            m_controller.AssoicateLed(0, m_leds[0].GetLed());
+            m_controller.AssoicateLed(3, m_leds[1].GetLed());
+            m_controller.AssoicateLed(6, m_leds[2].GetLed());
+            m_controller.AssoicateLed(9, m_leds[3].GetLed());
+            m_controller.AssoicateLed(12, m_leds[4].GetLed());
         }
 
         public AnimatedLed GetLed(int ledNumber)

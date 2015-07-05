@@ -30,7 +30,10 @@ namespace GlowCommon.DataObjects
         public void SaveSettings()
         {
             // Set this explicitly so it will save the entire dictionary.
-            ProgramStateList = m_programStateList;
+            if (m_programStateList != null)
+            {
+                ProgramStateList = m_programStateList;
+            }          
         }
 
         //
@@ -45,8 +48,7 @@ namespace GlowCommon.DataObjects
             set
             {
                 m_programStateList = value;
-                // #todo fix
-                //SettingsHelpers<Dictionary<GlowPrograms, ProgramState>>.SetStringSeralizedNewValues(m_programStateList, "GlowControl.ProgramStateList");
+                SettingsHelpers<Dictionary<GlowPrograms, ProgramState>>.SetStringSeralizedNewValues(m_programStateList, "GlowControl.ProgramStateList");
             }
         }
         private Dictionary<GlowPrograms, ProgramState> m_programStateList = null;

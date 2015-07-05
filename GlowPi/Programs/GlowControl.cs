@@ -17,7 +17,6 @@ namespace GlowPi.Programs
         // Cycle vars
         int m_nextCycleTimeMs;
 
-
         public void InitProgram(IProgramController controller)
         {
             m_controller = controller;
@@ -118,15 +117,23 @@ namespace GlowPi.Programs
                 }
                 else
                 {
-                    // We didn't find anything running nor anything to be next... this is bad.
-                    // Look for something we can run and turn it on.
+                    // We didn't find anything running nor anything to be next. Loop through to see if we can find
+                    // a program that we can run.
+                    bool programFound = false;
                     foreach (KeyValuePair<GlowPrograms, GlowControlSettings.ProgramState> programState in m_settings.ProgramStateList)
                     {
                         if(programState.Value == GlowControlSettings.ProgramState.Eligible)
                         {
                             m_controller.ToggleProgram(programState.Key, true);
+                            programFound = true;
                             break;
                         }
+                    }
+
+                    // If we didn't find anything we are off.
+                    if(!programFound)
+                    {
+                        GoToSleepState();
                     }
                 }
 
@@ -137,6 +144,21 @@ namespace GlowPi.Programs
 
         public void CommandRecieved(Command command)
         {
+        }
+        
+        private void GoToSleepState()
+        {
+            // In the sleep state we want to turn off the balls...
+            m_controller.GetLed(0).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(1).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(2).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(3).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(4).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
+
+            // And slow down the work tick.
+            m_controller.SetWorkRate(500);
+
+            // Note the work tick will still fire which will cause us to keep listening for commands.
         }
     }
 }

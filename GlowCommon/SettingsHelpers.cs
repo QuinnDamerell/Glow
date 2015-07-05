@@ -71,7 +71,13 @@ namespace GlowCommon
 
         public static void SetStringSeralizedNewValues(T newValue, string valueName)
         {
-            GetRomaingSettings()[valueName] = Newtonsoft.Json.JsonConvert.SerializeObject(newValue);
+            // #fixthis i guess we have to use xml?
+            GetRomaingSettings()[valueName] = Newtonsoft.Json.JsonConvert.SerializeObject(newValue, Newtonsoft.Json.Formatting.Indented);
+        }
+
+        public static void SetDictStringSeralizedNewValues(IDictionary<int, int> newValue, string valueName)
+        {
+            GetRomaingSettings()[valueName] = Newtonsoft.Json.JsonConvert.SerializeObject(newValue, Newtonsoft.Json.Formatting.Indented);
         }
     }
 }
