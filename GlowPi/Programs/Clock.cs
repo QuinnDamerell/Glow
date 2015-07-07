@@ -35,7 +35,7 @@ namespace GlowPi.Programs
 
         public void DoWork(uint timeElaspedMs)
         {
-            System.Diagnostics.Debug.WriteLine("Clock do work");
+            System.Diagnostics.Debug.WriteLine("Clock do work time:"+timeElaspedMs);
 
             // Get the time now. 
             DateTime now = DateTime.Now;

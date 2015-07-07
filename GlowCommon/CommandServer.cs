@@ -113,6 +113,7 @@ namespace GlowCommon
             string cmdJson = Newtonsoft.Json.JsonConvert.SerializeObject(cmd);
             writer.WriteUInt32((uint)cmdJson.Length);
             writer.WriteString(cmdJson);
+            await writer.StoreAsync();
             await writer.FlushAsync();
         }
     }

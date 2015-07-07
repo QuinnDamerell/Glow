@@ -75,11 +75,11 @@ namespace GlowPi.Programs
 
             // Set all of the LEDs
             List<SerlizableLed> localList = m_settings.CurrentLedState;
-            m_controller.GetLed(0).Animate(localList[0].Red, localList[0].Green, localList[0].Blue, localList[0].Intensity, new TimeSpan(0,0,0,0,200), WindowsIotLedDriver.AnimationType.Linear);
-            m_controller.GetLed(1).Animate(localList[1].Red, localList[1].Green, localList[1].Blue, localList[1].Intensity, new TimeSpan(0,0,0,0,200), WindowsIotLedDriver.AnimationType.Linear);
-            m_controller.GetLed(2).Animate(localList[2].Red, localList[2].Green, localList[2].Blue, localList[2].Intensity, new TimeSpan(0,0,0,0,200), WindowsIotLedDriver.AnimationType.Linear);
-            m_controller.GetLed(3).Animate(localList[3].Red, localList[3].Green, localList[3].Blue, localList[3].Intensity, new TimeSpan(0,0,0,0,200), WindowsIotLedDriver.AnimationType.Linear);
-            m_controller.GetLed(4).Animate(localList[4].Red, localList[4].Green, localList[4].Blue, localList[4].Intensity, new TimeSpan(0,0,0,0,200), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(0).Animate(localList[0].Red, localList[0].Green, localList[0].Blue, localList[0].Intensity, new TimeSpan(0,0,0,1), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(1).Animate(localList[1].Red, localList[1].Green, localList[1].Blue, localList[1].Intensity, new TimeSpan(0,0,0,1), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(2).Animate(localList[2].Red, localList[2].Green, localList[2].Blue, localList[2].Intensity, new TimeSpan(0,0,0,1), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(3).Animate(localList[3].Red, localList[3].Green, localList[3].Blue, localList[3].Intensity, new TimeSpan(0,0,0,1), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(4).Animate(localList[4].Red, localList[4].Green, localList[4].Blue, localList[4].Intensity, new TimeSpan(0,0,0,1), WindowsIotLedDriver.AnimationType.Linear);
         }
 
         // Updates the settings given a settings command.
@@ -94,7 +94,10 @@ namespace GlowPi.Programs
 
             // Set the new settings
             m_settings = newSettings;
-            m_settings.SaveSettings();         
+            m_settings.SaveSettings();
+
+            // Update the LEDs
+            SetCurrentValues();     
         }
 
         // Returns a command for the current settings

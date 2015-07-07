@@ -28,7 +28,12 @@ namespace GlowCommon.DataObjects
         {
             get
             {
-                return SettingsHelpers< List<SerlizableLed>>.GetStringSeralizedValueOrDefault(ref m_currentLedState, null, new List<SerlizableLed>(), "ManualColorSettings.CurrentLedState");
+                //return SettingsHelpers< List<SerlizableLed>>.GetStringSeralizedValueOrDefault(ref m_currentLedState, null, new List<SerlizableLed>(), "ManualColorSettings.CurrentLedState");
+                if(m_currentLedState == null)
+                {
+                    m_currentLedState = new List<SerlizableLed>();
+                }
+                return m_currentLedState;
             }
             set
             {

@@ -143,6 +143,7 @@ namespace Glow
             string cmdJson = Newtonsoft.Json.JsonConvert.SerializeObject(cmd);
             m_socketDataWriter.WriteUInt32((uint)cmdJson.Length);
             m_socketDataWriter.WriteString(cmdJson);
+            await m_socketDataWriter.StoreAsync();
             await m_socketDataWriter.FlushAsync();
         }
 
