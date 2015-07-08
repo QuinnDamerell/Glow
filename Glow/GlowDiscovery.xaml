@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="Glow.GlowDiscovery"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Glow"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+       
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="157">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Ellipse Width="120" Height="120" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" x:Name="ui_glowCircle">
+                <Ellipse.Resources>
+                    <Storyboard x:Name="ui_storyCircleColor">
+                        <ColorAnimation x:Name="ui_animCircleColor" Storyboard.TargetName="ui_glowCircle" Storyboard.TargetProperty="(Ellipse.Fill).(SolidColorBrush.Color)" />
+                    </Storyboard>
+                </Ellipse.Resources>
+            </Ellipse>
+            <TextBlock Grid.Row="1" x:Name="ui_titleText" Text="Searching for the light..." Margin="0,20" HorizontalAlignment="Center">
+                <TextBlock.Resources>
+                    <Storyboard x:Name="ui_storyText">
+                        <DoubleAnimation x:Name="ui_animTitleText"  Storyboard.TargetName="ui_titleText" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1"/>
+                    </Storyboard>
+                </TextBlock.Resources>
+            </TextBlock>
+            <Button x:Name="ui_helpButton" Grid.Row="2" Content="help" HorizontalAlignment="Stretch" Margin="0,0,0,20" Tapped="Help_Tapped">
+                <Button.Resources>
+                    <Storyboard x:Name="ui_storyHelpButton">
+                        <DoubleAnimation x:Name="ui_animHelpButton"  Storyboard.TargetName="ui_helpButton" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1"/>
+                    </Storyboard>
+                </Button.Resources>
+            </Button>
+            <Button x:Name="ui_manualButtom" Grid.Row="3" Content="manual" HorizontalAlignment="Stretch" Tapped="Manual_Tapped">
+                <Button.Resources>
+                    <Storyboard x:Name="ui_storyManualButtom">
+                        <DoubleAnimation x:Name="ui_animManualButtom" Storyboard.TargetName="ui_manualButtom" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1"/>
+                    </Storyboard>
+                </Button.Resources>
+            </Button>
+        </Grid>
+    </Grid>
+</Page>

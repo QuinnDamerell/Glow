@@ -36,8 +36,8 @@
         Square150x150Logo="Assets\Logo.png"
         Square44x44Logo="Assets\SmallLogo.png"
         Description="Glow"
-        BackgroundColor="#464646">
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        BackgroundColor="#FFFFFF">
+        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#FFFFFF" />
       </uap:VisualElements>
     </Application>
   </Applications>

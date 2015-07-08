@@ -110,6 +110,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CommandServer.cs" />
+    <Compile Include="DataObjects\AppSettings.cs" />
     <Compile Include="DataObjects\ClockSettings.cs" />
     <Compile Include="DataObjects\Command.cs" />
     <Compile Include="DataObjects\Commands\ManualColorCommands.cs" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlowCommon;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,11 @@ namespace Glow
     sealed partial class App : Application
     {
         /// <summary>
+        /// A common backend object for all of the pages to use.
+        /// </summary>
+        public static GlowBackend GlowBack;
+
+        /// <summary>
         /// Allows tracking page views, exceptions and other telemetry through the Microsoft Application Insights service.
         /// </summary>
         public static Microsoft.ApplicationInsights.TelemetryClient TelemetryClient;
@@ -36,6 +42,7 @@ namespace Glow
         public App()
         {
             TelemetryClient = new Microsoft.ApplicationInsights.TelemetryClient();
+            GlowBack = new GlowBackend(true);
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;
@@ -81,7 +88,7 @@ namespace Glow
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                rootFrame.Navigate(typeof(GlowDiscovery), e.Arguments);
             }
             // Ensure the current window is active
             Window.Current.Activate();
