@@ -14,10 +14,6 @@
         </Grid.RowDefinitions>
         <StackPanel Margin="12">
             <TextBlock x:Name="u_StatusText" Text="Status: None" Margin="0,12"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="u_ConnectionIp" Text="192.168.1.9" MinWidth="150" Margin="0,0,12,0"/>
-                <Button Content="Connect" Click="Button_Click"/>
-            </StackPanel>
         </StackPanel>
         <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled">
             <StackPanel>

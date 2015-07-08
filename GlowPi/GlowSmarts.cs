@@ -50,6 +50,10 @@ namespace GlowPi
             program.InitProgram(this);
             m_programCache.Add(GlowPrograms.GlowControl, program);
 
+            program = new DiscoveryControl();
+            program.InitProgram(this);
+            m_programCache.Add(GlowPrograms.DiscoveryControl, program);
+
             program = new ManualColor();
             program.InitProgram(this);
             m_programCache.Add(GlowPrograms.ManualColors, program);

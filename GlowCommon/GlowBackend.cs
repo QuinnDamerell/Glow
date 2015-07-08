@@ -25,6 +25,7 @@ namespace GlowCommon
     public enum GlowPrograms
     {
         GlowControl = 0,
+        DiscoveryControl,
         ManualColors,
         Clock,
         Weather,

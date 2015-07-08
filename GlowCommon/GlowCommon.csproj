@@ -115,8 +115,10 @@
     <Compile Include="DataObjects\Commands\ManualColorCommands.cs" />
     <Compile Include="DataObjects\GlowControlSettings.cs" />
     <Compile Include="DataObjects\ManualColorSettings.cs" />
+    <Compile Include="DiscoveryServer.cs" />
     <Compile Include="GlowBackend.cs" />
     <Compile Include="Interfaces\ICommandListener.cs" />
+    <Compile Include="Interfaces\IDiscoveryServerListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsHelpers.cs" />
   </ItemGroup>

@@ -70,7 +70,7 @@ namespace GlowCommon
                         if(stringWaitData != stringLen)
                         {
                             // We couldn't read the full string length.
-                            return;
+                            break;
                         }
 
                         // Get the actual string

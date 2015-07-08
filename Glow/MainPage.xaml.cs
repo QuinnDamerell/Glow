@@ -19,6 +19,8 @@ using GlowCommon.DataObjects;
 using GlowCommon;
 using System.Threading.Tasks;
 using Windows.UI;
+using GlowCommon.Interfaces;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,18 +29,21 @@ namespace Glow
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, IDiscoveryServerListener
     {
         DispatcherTimer m_timer;
         ManualColorSettings m_lastSettings = new ManualColorSettings();
         DataWriter m_socketDataWriter = null;
         StreamSocket m_socket = null;
         bool m_hasUpdates = true;
+        DiscoveryServer m_discovery;
+        CoreDispatcher m_dispatcher;
 
         public MainPage()
         {
             this.InitializeComponent();
             this.Loaded += MainPage_Loaded;
+            m_dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -47,33 +52,23 @@ namespace Glow
             m_timer.Interval = new TimeSpan(0,0,0,0,50);
             m_timer.Tick += Timer_Tick;
             m_timer.Start();
+
+            // Setup discovery
+            m_discovery = new DiscoveryServer(DiscoveryServer.DiscoveryMode.Listen);
+            m_discovery.SetListener(this);
+            SetStatus("Listening...");
         }
 
         private void SetStatus(string text)
         {
-            u_StatusText.Text = "Status: " + text;
-        }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            SetStatus("Connecting...");
-            try
-            { 
-                m_socket = new StreamSocket();
-                HostName name = new HostName(u_ConnectionIp.Text);
-                await m_socket.ConnectAsync(name, CommandServer.GLOW_SERVER_PORT + "");
-                SetStatus("Connected");
-                m_socketDataWriter = new DataWriter(m_socket.OutputStream);
-
-                // Force an update.
-                m_hasUpdates = true;
-            }
-            catch(Exception ex)
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            m_dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                SetStatus("Failed - " + ex.Message);
-            }
+                 u_StatusText.Text = "Status: " + text;
+             });
+            
         }
-
+        
         // Gather the values on the timer tick
         private async void Timer_Tick(object sender, object e)
         {
@@ -150,6 +145,26 @@ namespace Glow
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             m_hasUpdates = true;
+        }
+
+        public async void OnClientFound(string ipAddres)
+        {
+            SetStatus("Connecting...");
+            try
+            {
+                m_socket = new StreamSocket();
+                HostName name = new HostName(ipAddres);
+                await m_socket.ConnectAsync(name, CommandServer.GLOW_SERVER_PORT + "");
+                SetStatus("Connected to "+ipAddres);
+                m_socketDataWriter = new DataWriter(m_socket.OutputStream);
+
+                // Force an update.
+                m_hasUpdates = true;
+            }
+            catch (Exception ex)
+            {
+                SetStatus("Failed - " + ex.Message);
+            }
         }
     }
 }

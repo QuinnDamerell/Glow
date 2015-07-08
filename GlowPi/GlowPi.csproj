@@ -98,6 +98,7 @@
     <Compile Include="LedController.cs" />
     <Compile Include="MainTask.cs" />
     <Compile Include="Programs\Clock.cs" />
+    <Compile Include="Programs\DiscoveryControl.cs" />
     <Compile Include="Programs\GlowControl.cs" />
     <Compile Include="Programs\ManualColor.cs" />
     <Compile Include="Programs\Weather.cs" />
