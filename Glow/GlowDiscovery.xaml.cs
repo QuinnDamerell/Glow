@@ -177,8 +177,9 @@ namespace Glow
             {
                 return;
             }
-            MessageDialog message = new MessageDialog("Not done yet.", "Oops");
-            message.ShowAsync();
+            //MessageDialog message = new MessageDialog("Not done yet.", "Oops");
+            //message.ShowAsync();
+            NavigateAwaySuccess(); //# todo remove
         }
 
         /// <summary>
@@ -248,7 +249,7 @@ namespace Glow
                 App.GlowBack.ConnectionManager.OnClientConnected -= ConnectionManager_OnClientConnected;
 
                 // The the animation is complete navigate
-                this.Frame.Navigate(typeof(MainPage), null);
+                this.Frame.Navigate(typeof(MainLanding), null);
             };
         }
     }

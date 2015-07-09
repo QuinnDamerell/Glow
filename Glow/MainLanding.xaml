@@ -1,0 +1,59 @@
+﻿<Page
+    x:Class="Glow.MainLanding"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Glow"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        
+        <SplitView x:Name="ui_spitView" DisplayMode="CompactOverlay" >
+            <SplitView.Pane>
+                <Grid Background="{ThemeResource ApplicationPointerOverForegroundThemeBrush}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Hamburger Icon -->
+                    <Button VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Click="MenuButton_Click" Padding="12">
+                        <Button.Content>
+                            <SymbolIcon Symbol="AlignCenter" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
+                        </Button.Content>
+                    </Button>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Menu" VerticalAlignment="Center" FontSize="20" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}" Tapped="MenuText_Tapped"/>
+
+                    <!-- Manual Color -->
+                    <Button Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="ManualColor_Click">
+                        <Button.Content>
+                            <SymbolIcon Symbol="AllApps" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
+                        </Button.Content>
+                    </Button>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Manual Color" VerticalAlignment="Center" FontSize="20" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}" Tapped="ManualColor_Tapped"/>
+
+                    <!-- Clock -->
+                    <Button Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="Clock_Click">
+                        <Button.Content>
+                            <SymbolIcon Symbol="Clock" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
+                        </Button.Content>
+                    </Button>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Clock" VerticalAlignment="Center" FontSize="20" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}" Tapped="Clock_Tapped"/>
+                </Grid>
+            </SplitView.Pane>
+            <SplitView.Content>
+                <Grid x:Name="ui_contentGrid">
+                    
+                </Grid>
+            </SplitView.Content>
+        </SplitView>
+    </Grid>
+</Page>

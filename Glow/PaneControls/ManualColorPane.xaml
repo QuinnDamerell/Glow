@@ -1,29 +1,18 @@
-﻿<Page
-    x:Class="Glow.MainPage"
+﻿<UserControl
+    x:Class="Glow.PageControls.ManualColorPane"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Glow"
+    xmlns:local="using:Glow.PageControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-
-    <Page.Transitions>
-        <TransitionCollection>
-            <NavigationThemeTransition  />
-        </TransitionCollection>
-    </Page.Transitions>
+    mc:Ignorable="d"
+    d:DesignHeight="800"
+    d:DesignWidth="600">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <StackPanel Margin="12">
-            <TextBlock x:Name="u_StatusText" Text="Status: None" Margin="0,12"/>
-        </StackPanel>
         <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled">
             <StackPanel>
-                <Grid>
+                <Grid Padding="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -35,14 +24,14 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*" MaxWidth="400"/>
                     </Grid.ColumnDefinitions>
-                    
+
                     <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led1"/>
                     <Slider Grid.Column="1" Padding="8,2" x:Name="u_led1r" ValueChanged="Slider_ValueChanged"/>
                     <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led1g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
                     <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led1b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
                     <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led1i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
                 </Grid>
-                <Grid Background="#22000000">
+                <Grid Background="#22000000" Padding="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -60,7 +49,7 @@
                     <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led2b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
                     <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led2i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
                 </Grid>
-                <Grid>
+                <Grid Padding="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -78,7 +67,7 @@
                     <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led3b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
                     <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led3i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
                 </Grid>
-                <Grid Background="#22000000">
+                <Grid Background="#22000000" Padding="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -96,7 +85,7 @@
                     <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led4b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
                     <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led4i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
                 </Grid>
-                <Grid>
+                <Grid Padding="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -116,5 +105,6 @@
                 </Grid>
             </StackPanel>
         </ScrollViewer>
+
     </Grid>
-</Page>
+</UserControl>

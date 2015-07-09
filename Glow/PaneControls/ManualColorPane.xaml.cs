@@ -1,10 +1,15 @@
-﻿using System;
+﻿using GlowCommon;
+using GlowCommon.DataObjects;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -12,31 +17,18 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.Networking.Sockets;
-using Windows.Networking;
-using Windows.Storage.Streams;
-using GlowCommon.DataObjects;
-using GlowCommon;
-using System.Threading.Tasks;
-using Windows.UI;
-using GlowCommon.Interfaces;
-using Windows.UI.Core;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Glow
+namespace Glow.PageControls
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class ManualColorPane : UserControl
     {
         DispatcherTimer m_timer;
         ManualColorSettings m_lastSettings = new ManualColorSettings();
         bool m_hasUpdates = true;
         CoreDispatcher m_dispatcher;
-
-        public MainPage()
+        public ManualColorPane()
         {
             this.InitializeComponent();
             this.Loaded += MainPage_Loaded;
@@ -46,26 +38,16 @@ namespace Glow
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             m_timer = new DispatcherTimer();
-            m_timer.Interval = new TimeSpan(0,0,0,0,50);
+            m_timer.Interval = new TimeSpan(0, 0, 0, 0, 50);
             m_timer.Tick += Timer_Tick;
             m_timer.Start();
         }
 
-        private void SetStatus(string text)
-        {
-#pragma warning disable CS4014 
-            m_dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                 u_StatusText.Text = "Status: " + text;
-             });
-            
-        }
-        
         // Gather the values on the timer tick
         private async void Timer_Tick(object sender, object e)
         {
             // Don't update unless we have something
-            if(!m_hasUpdates)
+            if (!m_hasUpdates)
             {
                 return;
             }
@@ -125,11 +107,10 @@ namespace Glow
             {
                 await App.GlowBack.ConnectionManager.SendCommand(cmd);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                SetStatus("Send failed! m:"+e.Message);
+
             }
-            
         }
 
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)

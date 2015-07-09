@@ -97,8 +97,14 @@
     <Compile Include="GlowDiscovery.xaml.cs">
       <DependentUpon>GlowDiscovery.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="MainLanding.xaml.cs">
+      <DependentUpon>MainLanding.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PaneControls\ClockPane.xaml.cs">
+      <DependentUpon>ClockPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PaneControls\ManualColorPane.xaml.cs">
+      <DependentUpon>ManualColorPane.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -127,9 +133,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="MainLanding.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PaneControls\ClockPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PaneControls\ManualColorPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
