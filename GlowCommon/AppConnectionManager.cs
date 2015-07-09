@@ -46,23 +46,6 @@ namespace GlowCommon
             CreateDiscoveryPingTimmer();
         }
 
-        private void CreateDiscoveryPingTimmer()
-        {
-            // Create the timer
-            m_discoveryPingTimer = ThreadPoolTimer.CreatePeriodicTimer(async (ThreadPoolTimer source) =>
-            {
-                // When the timer fires try to send a message.
-                await m_discoveryServer.InvokeBroadcast();
-            },
-            // Fire every 2 seconds
-            new TimeSpan(0, 0, 2));
-        }
-
-        private void DestoryDiscoverPingTimer()
-        {
-            m_discoveryPingTimer.Cancel();
-        }
-
         /// <summary>
         /// Called when a server is found! Try to connect.
         /// </summary>
@@ -86,6 +69,9 @@ namespace GlowCommon
             m_commandServer = new CommandServer(this, CommandServer.CommmandServerMode.Client, ipAddress);
         }
 
+        /// <summary>
+        /// Fired when a new server connection has been made
+        /// </summary>
         public void OnConnect()
         {
             // We connected! We are ready!
@@ -101,7 +87,9 @@ namespace GlowCommon
             }            
         }
 
-
+        /// <summary>
+        /// Fired when a server connection has been lost
+        /// </summary>
         public void OnDisconnected()
         {
             // We disconnected. O no.
@@ -114,24 +102,40 @@ namespace GlowCommon
             // Enable the ping timer to attempt to reconnect.
             CreateDiscoveryPingTimmer();
 
-            if (OnClientConnected != null)
+            // Kill the connection
+            m_commandServer = null;
+
+            if (OnClientDisconnected != null)
             {
-                OnClientConnected();
+                OnClientDisconnected();
             }
         }
 
+        /// <summary>
+        /// Fired when there has been an error we can't recover from.
+        /// </summary>
         public void OnFatalError()
         {
             // This is bad
             // #todo handle
         }
 
+        /// <summary>
+        /// Fired when the server sends a command
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         public Command OnCommand(Command command)
         {
             // #todo handle   
             return null;
         }
 
+        /// <summary>
+        /// Called by the consumer when they want to send a message to the other side.
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns></returns>
         public async Task<bool> SendCommand(Command cmd)
         {
             lock (objectLock)
@@ -144,6 +148,30 @@ namespace GlowCommon
 
             // Send the message
             return await m_commandServer.SendMessage(cmd);
+        }
+
+
+        /// <summary>
+        /// Used to create a tick timer for the broadcast pinger
+        /// </summary>
+        private void CreateDiscoveryPingTimmer()
+        {
+            // Create the timer
+            m_discoveryPingTimer = ThreadPoolTimer.CreatePeriodicTimer(async (ThreadPoolTimer source) =>
+            {
+                // When the timer fires try to send a message.
+                await m_discoveryServer.InvokeBroadcast();
+            },
+            // Fire every 2 seconds
+            new TimeSpan(0, 0, 2));
+        }
+
+        /// <summary>
+        /// Used to stop the timer for the ping timer.
+        /// </summary>
+        private void DestoryDiscoverPingTimer()
+        {
+            m_discoveryPingTimer.Cancel();
         }
     }
 }

@@ -24,8 +24,13 @@ namespace GlowCommon
         // Private Vars
         //
         ICommandServerListener m_listener;
+
+        // Server vars
         StreamSocketListener m_socketListener;
+
+        // Client vars
         StreamSocket m_socket;
+        DataWriter m_clientDataWriter;
         CommmandServerMode m_mode;
 
         //
@@ -86,13 +91,25 @@ namespace GlowCommon
                 throw new NotImplementedException("Server can't send message right now");
             }
 
-            if(m_socket == null)
+            if(m_socket == null && m_clientDataWriter != null)
             {
                 throw new Exception("The socket isn't open!");
             }
 
-            // Send the message
-            await InternalSendMessage(cmd, new DataWriter(m_socket.OutputStream));
+            try
+            {
+                // Send the message
+                await InternalSendMessage(cmd, m_clientDataWriter);
+            }
+            catch(Exception e)
+            {
+                // We failed, tell the consumer.
+                System.Diagnostics.Debug.WriteLine("Send Message Failed: " + e.Message);
+                m_socket = null;
+                m_clientDataWriter = null;
+                m_listener.OnDisconnected();
+                return false;                
+            }
 
             return true;
         }
@@ -127,6 +144,12 @@ namespace GlowCommon
                     DataReader reader = new DataReader(socket.InputStream);
                     DataWriter writer = new DataWriter(socket.OutputStream);
 
+                    if(m_mode == CommmandServerMode.Client)
+                    {
+                        // If this is the client make sure we push the writer out.
+                        m_clientDataWriter = writer;
+                    }
+
                     // Loop
                     while (true)
                     {
@@ -145,9 +168,14 @@ namespace GlowCommon
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine("The socket listener hit an exception: " + e.Message);
-                    m_listener.OnDisconnected();
+                    System.Diagnostics.Debug.WriteLine("The socket listener hit an exception: " + e.Message);                    
                 }
+
+                // Call disconnect and clean up.
+                m_socket = null;
+                m_clientDataWriter = null;
+                m_listener.OnDisconnected();
+
             }).Start();      
         }        
 

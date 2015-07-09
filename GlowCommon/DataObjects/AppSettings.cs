@@ -11,18 +11,18 @@ namespace GlowCommon.DataObjects
         //
         // Settings
         //
-        public string DeviceIp
+        public bool ShowShortIntro
         {
             get
             {
-                return SettingsHelpers<string>.GetValueOrDefault(ref m_deviceIp, "", "", "AppSettings.DeviceIp");
+                return SettingsHelpers<bool>.GetValueOrDefault(ref m_showShortIntro, true, true, "AppSettings.ShowShortIntro");
             }
             set
             {
-                m_deviceIp = value;
-                SettingsHelpers<string>.SetNewValues(m_deviceIp, "AppSettings.DeviceIp");
+                m_showShortIntro = value;
+                SettingsHelpers<bool>.SetNewValues(m_showShortIntro, "AppSettings.ShowShortIntro");
             }
         }
-        private string m_deviceIp = "";
+        private bool m_showShortIntro = true;
     }
 }

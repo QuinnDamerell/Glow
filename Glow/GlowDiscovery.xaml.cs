@@ -35,13 +35,27 @@ namespace Glow
             {30, 150, 0}
         };
 
-        // UI vars
+        // UI Vars
         CoreDispatcher m_dispatcher;
         DispatcherTimer m_timer;
-        int m_timerTickCount = 0;
+
+        // Keeps track of the current ball color
         int m_currentColor = s_colorArray.Length;
-        bool softDisableButtons = true;
-        bool readyToNavigate = false;
+
+        // Used to keep track of how many times the UI timer has fired
+        int m_timerTickCount = 0;
+
+        // Disables the buttons
+        bool m_softDisableButtons = true;
+
+        /// <summary>
+        /// Set true when the UI is in a state where it is safe to leave if
+        /// we have a connection.
+        /// </summary>
+        bool m_readyToNavigate = false;
+
+        // Set true when the buttons shouldn't be shown.
+        bool m_dontShowButtons = false;
 
         public GlowDiscovery()
         {
@@ -58,10 +72,16 @@ namespace Glow
             App.GlowBack.ConnectionManager.OnClientConnected += ConnectionManager_OnClientConnected;
         }
 
+        /// <summary>
+        /// Fired when a client is connected and we are ready to move on.
+        /// </summary>
         private void ConnectionManager_OnClientConnected()
         {
+            // Unsub from the event so we don't get it again
+            App.GlowBack.ConnectionManager.OnClientConnected -= ConnectionManager_OnClientConnected;
+
             // If we are ready and we get connected then go go go.
-            if(readyToNavigate)
+            if (m_readyToNavigate)
             {
                 // Run on the UI thread.
                 m_dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -83,7 +103,7 @@ namespace Glow
             Timer_tick(null, null);
 
             // Delay the text animation and kick it off
-            ui_animTitleText.BeginTime = new TimeSpan(0, 0, 3);
+            ui_animTitleText.BeginTime = new TimeSpan(0, 0, App.GlowBack.AppSetting.ShowShortIntro ? 3 : 1);
             ui_storyText.Completed += StoryText_Complete;
             ui_storyText.Begin();
         }
@@ -105,18 +125,19 @@ namespace Glow
             }
 
             // If not set the bool to true so when we
-            readyToNavigate = true;
+            m_readyToNavigate = true;
         }
 
         private void Timer_tick(object sender, object e)
         {
-            // Check if we should show the other buttons.
+            // Check if we should show the other buttons, only show them if time time is right
+            // and we aren't going to leave.
             m_timerTickCount++;
-            if (m_timerTickCount == 3)
+            if (m_timerTickCount == 3 && !m_dontShowButtons)
             {
                 ui_storyHelpButton.Begin();
                 ui_storyManualButtom.Begin();
-                softDisableButtons = false;
+                m_softDisableButtons = false;
             }
 
             // Update the color count
@@ -135,19 +156,24 @@ namespace Glow
             ui_storyCircleColor.Begin();
         }
 
+        /// <summary>
+        /// Fired when the help button is tapped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Help_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (softDisableButtons)
+            if (m_softDisableButtons)
             {
                 return;
             }
-            MessageDialog message = new MessageDialog("We are searching for your glow device. Ensure your device is on and that it is connected to the same local network as this device. If all is good, we should find it in a few seconds.", "Searching...");
+            MessageDialog message = new MessageDialog("We are searching for your glow device. Ensure your device is on, Glow is running, and the device is connected to the same local network as this device. If all is good, we should find it in a few seconds.", "Searching...");
             message.ShowAsync();
         }
 
         private void Manual_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if(softDisableButtons)
+            if(m_softDisableButtons)
             {
                 return;
             }
@@ -155,23 +181,14 @@ namespace Glow
             message.ShowAsync();
         }
 
-        public void OnClientFound(string ipAddres)
-        {
-            // Save the IP address
-            App.GlowBack.AppSetting.DeviceIp = ipAddres;
-
-            // Run on the UI thread.
-            m_dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                NavigateAwaySuccess();
-            });
-        }
-
+        /// <summary>
+        /// Called when a client was found and we want to move on.
+        /// </summary>
         private async void NavigateAwaySuccess()
         {
-            // Stop the timer
-            m_timer.Stop();
-            softDisableButtons = true;
+            // Kill the buttons
+            m_softDisableButtons = true;
+            m_dontShowButtons = true;
 
             // First fade out the text so we can replace it
             ui_animTitleText.BeginTime = new TimeSpan(0, 0, 0);
@@ -203,7 +220,10 @@ namespace Glow
             ui_storyText.Begin();
 
             // Sleep to wait for the fade and to read
-            await Task.Delay(TimeSpan.FromSeconds(3));
+            await Task.Delay(TimeSpan.FromSeconds(App.GlowBack.AppSetting.ShowShortIntro ? 3 : 1));
+
+            // Stop the ball animation timer
+            m_timer.Stop();
 
             // Fade the rest out
             ui_animTitleText.BeginTime = new TimeSpan(0, 0, 0);
@@ -219,8 +239,14 @@ namespace Glow
             ui_storyText.Begin();
             ui_storyCircleColor.Begin();
 
+            // Since we found one do it more quickly next time.
+            App.GlowBack.AppSetting.ShowShortIntro = false;
+
             ui_storyCircleColor.Completed += (object s, object obj) =>
             {
+                // Unsub from the event so we don't fire it.
+                App.GlowBack.ConnectionManager.OnClientConnected -= ConnectionManager_OnClientConnected;
+
                 // The the animation is complete navigate
                 this.Frame.Navigate(typeof(MainPage), null);
             };
