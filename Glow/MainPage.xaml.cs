@@ -121,7 +121,15 @@ namespace Glow
             cmd.MessageId = Command.COMMAND_RECIEVE_SETTINGS;
             cmd.Message = Newtonsoft.Json.JsonConvert.SerializeObject(settings);
 
-            await App.GlowBack.ConnectionManager.SendCommand(cmd);
+            try
+            {
+                await App.GlowBack.ConnectionManager.SendCommand(cmd);
+            }
+            catch(Exception e)
+            {
+                SetStatus("Send failed! m:"+e.Message);
+            }
+            
         }
 
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
