@@ -29,14 +29,11 @@ namespace Glow
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page, IDiscoveryServerListener
+    public sealed partial class MainPage : Page
     {
         DispatcherTimer m_timer;
         ManualColorSettings m_lastSettings = new ManualColorSettings();
-        DataWriter m_socketDataWriter = null;
-        StreamSocket m_socket = null;
         bool m_hasUpdates = true;
-        DiscoveryServer m_discovery;
         CoreDispatcher m_dispatcher;
 
         public MainPage()
@@ -52,16 +49,11 @@ namespace Glow
             m_timer.Interval = new TimeSpan(0,0,0,0,50);
             m_timer.Tick += Timer_Tick;
             m_timer.Start();
-
-            // Setup discovery
-            m_discovery = new DiscoveryServer(DiscoveryServer.DiscoveryMode.Listen);
-            m_discovery.SetListener(this);
-            SetStatus("Listening...");
         }
 
         private void SetStatus(string text)
         {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+#pragma warning disable CS4014 
             m_dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                  u_StatusText.Text = "Status: " + text;
@@ -124,47 +116,17 @@ namespace Glow
 
         private async Task SendNewSettings(ManualColorSettings settings)
         {
-            if(m_socketDataWriter == null)
-            {
-                return;
-            }
-
             Command cmd = new Command();
             cmd.Program = GlowPrograms.ManualColors;
             cmd.MessageId = Command.COMMAND_RECIEVE_SETTINGS;
             cmd.Message = Newtonsoft.Json.JsonConvert.SerializeObject(settings);
 
-            // Serialize the cmd
-            string cmdJson = Newtonsoft.Json.JsonConvert.SerializeObject(cmd);
-            m_socketDataWriter.WriteUInt32((uint)cmdJson.Length);
-            m_socketDataWriter.WriteString(cmdJson);
-            await m_socketDataWriter.StoreAsync();
-            await m_socketDataWriter.FlushAsync();
+            await App.GlowBack.ConnectionManager.SendCommand(cmd);
         }
 
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             m_hasUpdates = true;
-        }
-
-        public async void OnClientFound(string ipAddres)
-        {
-            SetStatus("Connecting...");
-            try
-            {
-                m_socket = new StreamSocket();
-                HostName name = new HostName(ipAddres);
-                await m_socket.ConnectAsync(name, CommandServer.GLOW_SERVER_PORT + "");
-                SetStatus("Connected to "+ipAddres);
-                m_socketDataWriter = new DataWriter(m_socket.OutputStream);
-
-                // Force an update.
-                m_hasUpdates = true;
-            }
-            catch (Exception ex)
-            {
-                SetStatus("Failed - " + ex.Message);
-            }
         }
     }
 }

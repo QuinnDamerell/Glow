@@ -46,6 +46,7 @@ namespace GlowCommon
         // Public classes
         //
         public AppSettings AppSetting;
+        public AppConnectionManager ConnectionManager;
 
         //
         // Private vars
@@ -60,6 +61,7 @@ namespace GlowCommon
             {
                 // Only create these classes if we are an app
                 AppSetting = new AppSettings();
+                ConnectionManager = new AppConnectionManager();
             }
         }
     }

@@ -22,7 +22,7 @@ using Windows.UI.Xaml.Navigation;
 namespace Glow
 {
     #pragma warning disable CS4014
-    public sealed partial class GlowDiscovery : Page, IDiscoveryServerListener
+    public sealed partial class GlowDiscovery : Page
     {
         private static byte[,] s_colorArray = new byte[,]
         {
@@ -41,9 +41,7 @@ namespace Glow
         int m_timerTickCount = 0;
         int m_currentColor = s_colorArray.Length;
         bool softDisableButtons = true;
-
-        // Discovery vars
-        DiscoveryServer m_discoveryServer;
+        bool readyToNavigate = false;
 
         public GlowDiscovery()
         {
@@ -55,6 +53,22 @@ namespace Glow
             ui_manualButtom.Opacity = 0;
             ui_titleText.Opacity = 0;
             ui_helpButton.Opacity = 0;
+
+            // Subscribe to the connected event.
+            App.GlowBack.ConnectionManager.OnClientConnected += ConnectionManager_OnClientConnected;
+        }
+
+        private void ConnectionManager_OnClientConnected()
+        {
+            // If we are ready and we get connected then go go go.
+            if(readyToNavigate)
+            {
+                // Run on the UI thread.
+                m_dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    NavigateAwaySuccess();
+                });
+            }
         }
 
         private void GlowDiscovery_Loaded(object sender, RoutedEventArgs e)
@@ -70,17 +84,28 @@ namespace Glow
 
             // Delay the text animation and kick it off
             ui_animTitleText.BeginTime = new TimeSpan(0, 0, 3);
+            ui_storyText.Completed += StoryText_Complete;
             ui_storyText.Begin();
+        }
 
-            new Task(async () =>
+        /// <summary>
+        /// Fired when the title text has finished the first time.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StoryText_Complete(object sender, object e)
+        {
+            // Remove the listener so we don't get called back again.
+            ui_storyText.Completed -= StoryText_Complete;
+
+            // Check if we are ready now, if so green light.
+            if(App.GlowBack.ConnectionManager.IsConnected)
             {
-                // Don't start the discovery server too soon to it won't
-                // interrupt the animations.
-                await Task.Delay(TimeSpan.FromSeconds(3));
+                NavigateAwaySuccess();
+            }
 
-                m_discoveryServer = new DiscoveryServer(DiscoveryServer.DiscoveryMode.Listen);
-                m_discoveryServer.SetListener(this);
-            }).Start();
+            // If not set the bool to true so when we
+            readyToNavigate = true;
         }
 
         private void Timer_tick(object sender, object e)
@@ -134,9 +159,6 @@ namespace Glow
         {
             // Save the IP address
             App.GlowBack.AppSetting.DeviceIp = ipAddres;
-
-            // Kill the callback from the discovery
-            m_discoveryServer.SetListener(null);
 
             // Run on the UI thread.
             m_dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

@@ -109,6 +109,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AppConnectionManager.cs" />
     <Compile Include="CommandServer.cs" />
     <Compile Include="DataObjects\AppSettings.cs" />
     <Compile Include="DataObjects\ClockSettings.cs" />
@@ -118,7 +119,7 @@
     <Compile Include="DataObjects\ManualColorSettings.cs" />
     <Compile Include="DiscoveryServer.cs" />
     <Compile Include="GlowBackend.cs" />
-    <Compile Include="Interfaces\ICommandListener.cs" />
+    <Compile Include="Interfaces\ICommandServerListener.cs" />
     <Compile Include="Interfaces\IDiscoveryServerListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsHelpers.cs" />

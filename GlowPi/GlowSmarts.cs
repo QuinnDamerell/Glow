@@ -12,7 +12,7 @@ using WindowsIotLedDriver;
 
 namespace GlowPi
 {
-    class GlowSmarts : ICommandListener, IProgramController
+    class GlowSmarts : ICommandServerListener, IProgramController
     {
         //
         // Private Vars
@@ -71,8 +71,8 @@ namespace GlowPi
             m_programCache.Add(GlowPrograms.WeatherCam, program);
 
             // Create a command listener
-            m_commandServer = new CommandServer(this);
-            m_commandServer.Setup(CommandServer.GLOW_SERVER_PORT);
+            //m_commandServer = new CommandServer(this);
+           // m_commandServer.Setup(CommandServer.GLOW_SERVER_PORT);
 
             // Setup the main worker thread.
             m_continueWorking = true;
@@ -233,6 +233,21 @@ namespace GlowPi
                 // Empty the list
                 m_programModifications.Clear();
             }
+        }
+
+        public void OnConnect()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnDisconnected()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnFatalError()
+        {
+            throw new NotImplementedException();
         }
     }
 }
