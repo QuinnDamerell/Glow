@@ -55,7 +55,7 @@
                     <!-- Weather -->
                     <Button x:Name="ui_weatherButton" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="Weather_Click">
                         <Button.Content>
-                            <SymbolIcon Symbol="Calendar" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
+                            <SymbolIcon Symbol="Globe" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
                         </Button.Content>
                     </Button>
                     

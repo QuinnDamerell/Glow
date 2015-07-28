@@ -14,9 +14,21 @@ namespace GlowCommon.DataObjects
             public string State;
         }
 
-        public class CurrentCondition
+        public class WeatherCondition
         {
+            public enum Condition
+            {
+                Sunny,
+                Cloudy,
+                Rain,
+                Storm
+            }
 
+            public Condition CurrentCondition;
+            public int High;
+            public int Low;
+            public int Humidity;
+            public int WindSpeed;
         }
 
         /// <summary>
@@ -53,5 +65,54 @@ namespace GlowCommon.DataObjects
             }
         }
         private Location m_currentLocation = null;
+        
+        /// <summary>
+        /// The amount of time we will spend on each program when cycling.
+        /// </summary>
+        public WeatherCondition CurrentCondition
+        {
+            get
+            {
+                if (m_readSettings)
+                {
+                    return SettingsHelpers<WeatherCondition>.GetStringSeralizedValueOrDefault(ref m_currentCondition, null, null, "Weather.CurrentCondition");
+                }
+                else
+                {
+                    return m_currentCondition;
+                }
+            }
+            set
+            {
+                m_currentCondition = value;
+                SettingsHelpers<WeatherCondition>.SetStringSeralizedNewValues(m_currentCondition, "Weather.CurrentCondition");
+            }
+        }
+        private WeatherCondition m_currentCondition = null;
+
+
+        /// <summary>
+        /// The amount of time we will spend on each program when cycling.
+        /// </summary>
+        public DateTime LastUpdateTime
+        {
+            get
+            {
+                if (m_readSettings)
+                {
+                    return SettingsHelpers<DateTime>.GetStringSeralizedValueOrDefault(ref m_lastUpdateTime, new DateTime(0), new DateTime(0), "Weather.LastUpdateTime");
+                }
+                else
+                {
+                    return m_lastUpdateTime;
+                }
+            }
+            set
+            {
+                m_lastUpdateTime = value;
+                SettingsHelpers<DateTime>.SetStringSeralizedNewValues(m_lastUpdateTime, "Weather.LastUpdateTime");
+            }
+        }
+        private DateTime m_lastUpdateTime = new DateTime(0);
     }
 }

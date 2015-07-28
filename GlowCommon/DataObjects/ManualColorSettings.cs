@@ -25,34 +25,58 @@ namespace GlowCommon.DataObjects
         public void SaveSettings()
         {
             // Set this explicitly so it will save the entire dictionary.
-            if (m_currentLedState != null)
+            if (m_currentLedStateList != null)
             {
-                CurrentLedState = m_currentLedState;
+                CurrentLedStateList = m_currentLedStateList;
             }
         }
 
         //
         // Settings
         //
-        public List<SerlizableLed> CurrentLedState
+        public List<List<SerlizableLed>> CurrentLedStateList
         {
             get
             {
                 if (m_readSettings)
                 {
-                    return SettingsHelpers<List<SerlizableLed>>.GetStringSeralizedValueOrDefault(ref m_currentLedState, null, new List<SerlizableLed>(), "ManualColorSettings.CurrentLedState");
+                    return SettingsHelpers<List<List<SerlizableLed>>>.GetStringSeralizedValueOrDefault(ref m_currentLedStateList, null, new List<List<SerlizableLed>>(), "ManualColorSettings.CurrentLedStateList");
                 }
                 else
                 {
-                    return m_currentLedState;
-                }               
+                    return m_currentLedStateList;
+                }
             }
             set
             {
-                m_currentLedState = value;
-                SettingsHelpers<List<SerlizableLed>>.SetStringSeralizedNewValues(m_currentLedState, "ManualColorSettings.CurrentLedState");
+                m_currentLedStateList = value;
+                SettingsHelpers<List<List<SerlizableLed>>>.SetStringSeralizedNewValues(m_currentLedStateList, "ManualColorSettings.CurrentLedStateList");
             }
         }
-        private List<SerlizableLed> m_currentLedState = null;
+        private List<List<SerlizableLed>> m_currentLedStateList = null;
+
+        /// <summary>
+        /// The amount of time between cycles in the color list
+        /// </summary>
+        public double ColorListCycleTimeSeconds
+        {
+            get
+            {
+                if (m_readSettings)
+                {
+                    return SettingsHelpers<double>.GetStringSeralizedValueOrDefault(ref m_colorListCycleTimeSeconds, -1, 10, "ManualColorSettings.ColorListCycleTimeSeconds");
+                }
+                else
+                {
+                    return m_colorListCycleTimeSeconds;
+                }
+            }
+            set
+            {
+                m_colorListCycleTimeSeconds = value;
+                SettingsHelpers<double>.SetStringSeralizedNewValues(m_colorListCycleTimeSeconds, "ManualColorSettings.ColorListCycleTimeSeconds");
+            }
+        }
+        private double m_colorListCycleTimeSeconds = -1;
     }
 }

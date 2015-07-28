@@ -26,7 +26,7 @@ namespace GlowPi.Programs
             m_controller.ToggleProgram(GlowPrograms.DiscoveryControl, true);
 
             // Check if the settings need inited
-           // if (m_settings.ProgramStateList.Count == 0)
+            if (m_settings.ProgramStateList.Count == 0)
             {
                 // Create all of the programs with their defaults.
                 m_settings.ProgramStateList.Clear();

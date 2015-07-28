@@ -32,7 +32,6 @@ namespace Glow.PaneControls
         IProgramController m_controller;
         bool m_isEnabled = false;
         WeatherSettings m_settings = new WeatherSettings();
-        MapLocation m_location;
 
         public WeatherPane(IProgramController controller)
         {
@@ -95,7 +94,7 @@ namespace Glow.PaneControls
                 // Send the location to the pie
                 await SendNewSettings(m_settings);
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 ui_locationText.Text = "Failed to get your location!";
             }
