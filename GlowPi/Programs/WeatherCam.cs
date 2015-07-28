@@ -17,17 +17,17 @@ namespace GlowPi.Programs
 
         public void Activate()
         {
-            throw new NotImplementedException();
+
         }
 
         public void Deactivate()
         {
-            throw new NotImplementedException();
+
         }
 
         public void DoWork(uint timeElaspedMs)
         {
-            throw new NotImplementedException();
+
         }
 
         public Command CommandRecieved(Command command)

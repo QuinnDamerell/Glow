@@ -33,7 +33,7 @@ namespace GlowPi
             m_controller.AssoicateLed(3, m_leds[1].GetLed());
             m_controller.AssoicateLed(6, m_leds[2].GetLed());
             m_controller.AssoicateLed(9, m_leds[3].GetLed());
-            m_controller.AssoicateLed(12, m_leds[4].GetLed());
+            m_controller.AssoicateLed(15, m_leds[4].GetLed());
         }
 
         public AnimatedLed GetLed(int ledNumber)

@@ -51,13 +51,13 @@ namespace Glow.PaneControls
             m_isEnabled = m_controller.GetProgramState(GlowCommon.GlowPrograms.WeatherCam);
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                ui_weatherCamEnabled.IsOn = m_controller.GetProgramState(GlowCommon.GlowPrograms.Clock);
+                ui_weatherCamEnabled.IsOn = m_controller.GetProgramState(GlowCommon.GlowPrograms.WeatherCam);
             });
         }
 
         private void WeatherCamEnabled_Toggled(object sender, RoutedEventArgs e)
         {
-            m_controller.ToggleProgram(GlowCommon.GlowPrograms.WeatherCam, true);
+            m_controller.ToggleProgram(GlowCommon.GlowPrograms.WeatherCam, ui_weatherCamEnabled.IsOn);
         }
     }
 }

@@ -26,14 +26,14 @@ namespace GlowPi.Programs
             m_controller.ToggleProgram(GlowPrograms.DiscoveryControl, true);
 
             // Check if the settings need inited
-            if (m_settings.ProgramStateList.Count == 0)
+           // if (m_settings.ProgramStateList.Count == 0)
             {
                 // Create all of the programs with their defaults.
                 m_settings.ProgramStateList.Clear();
                 m_settings.ProgramStateList.Add(GlowPrograms.GlowControl, GlowControlSettings.ProgramState.Background);
                 m_settings.ProgramStateList.Add(GlowPrograms.DiscoveryControl, GlowControlSettings.ProgramState.Background);
-                m_settings.ProgramStateList.Add(GlowPrograms.ManualColors, GlowControlSettings.ProgramState.Eligible);
-                m_settings.ProgramStateList.Add(GlowPrograms.Clock, GlowControlSettings.ProgramState.Disabled);
+                m_settings.ProgramStateList.Add(GlowPrograms.ManualColors, GlowControlSettings.ProgramState.Disabled);
+                m_settings.ProgramStateList.Add(GlowPrograms.Clock, GlowControlSettings.ProgramState.Eligible);
                 m_settings.ProgramStateList.Add(GlowPrograms.Weather, GlowControlSettings.ProgramState.Disabled);
                 m_settings.ProgramStateList.Add(GlowPrograms.WeatherCam, GlowControlSettings.ProgramState.Disabled);
                 m_settings.SaveSettings();

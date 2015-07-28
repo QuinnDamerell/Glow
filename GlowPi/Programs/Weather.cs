@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GlowCommon.DataObjects;
 using GlowPi.Interfaces;
+using Windows.Devices.Geolocation;
 
 namespace GlowPi.Programs
 {
@@ -12,12 +13,12 @@ namespace GlowPi.Programs
     {
         public void InitProgram(IProgramController controller)
         {
+        
 
         }
 
-        public void Activate()
+        public async void Activate()
         {
-      
         }
 
         public void Deactivate()

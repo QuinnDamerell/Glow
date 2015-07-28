@@ -9,8 +9,9 @@
 
     <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="8">
         <TextBlock Style="{ThemeResource HeaderTextBlockStyle}" Text="Weather"/>
-        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Weather on your balls"/>
-        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="The clock extension will turn your glow objects into brightly colored center pieces that can be used to approximate the time. The current time will be shown on the objects in descending order, month, day of the week, hours, minutes, seconds." Margin="0,12"/>
+        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="What's the weather look like today?"/>
+        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="The weather extension will turn your glow objects into informative and beautiful weathermen! The current forecast for today will be shown on objects in the following order." Margin="0,12"/>
+        <TextBlock x:Name="ui_locationText" Style="{ThemeResource BodyTextBlockStyle}" Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" Text="Your Location: " Margin="0,0,0,12"/>
         <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Enable Weather"/>
         <ToggleSwitch x:Name="ui_weatherEnabled" Toggled="WeatherEnabled_Toggled"/>
     </StackPanel>

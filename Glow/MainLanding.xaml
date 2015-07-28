@@ -68,13 +68,29 @@
                 </Grid>
             </SplitView.Pane>
             <SplitView.Content>
-                <Grid x:Name="ui_contentGrid">
-                    <Grid.Resources>
-                        <Storyboard x:Name="ui_storyContentGrid">
-                            <DoubleAnimation x:Name="ui_animContentGrid" Storyboard.TargetName="ui_contentGrid" Storyboard.TargetProperty="Opacity" Completed="AnimContentGrid_Completed" Duration="0:0:0.3"/>
-                        </Storyboard>    
-                    </Grid.Resources>  
-                    <TextBlock />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Grid x:Name="ui_connectionLostHolder" Background="{ThemeResource SystemControlBackgroundAccentBrush}" Height="25" Visibility="Collapsed" VerticalAlignment="Top">
+                        <Grid.Resources>
+                            <Storyboard x:Name="ui_storyConnectionState">
+                                <DoubleAnimation x:Name="ui_animConnectionState" Storyboard.TargetName="ui_connectionLostHolder" EnableDependentAnimation="True" Storyboard.TargetProperty="Height" Completed="AnimConnectionState_Completed" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </Grid.Resources>
+                        <TextBlock Text="Connection Lost, Reconnecting..." Foreground="White"/>
+                    </Grid>
+                    
+                    <Grid Grid.Row="1" x:Name="ui_contentGrid">
+                        <Grid.Resources>
+                            <Storyboard x:Name="ui_storyContentGrid">
+                                <DoubleAnimation x:Name="ui_animContentGrid" Storyboard.TargetName="ui_contentGrid" Storyboard.TargetProperty="Opacity" Completed="AnimContentGrid_Completed" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </Grid.Resources>
+                        <TextBlock />
+                    </Grid>
                 </Grid>
             </SplitView.Content>
         </SplitView>

@@ -53,5 +53,6 @@
     <Capability Name="internetClient" />
     <Capability Name="internetClientServer"/>
     <Capability Name="privateNetworkClientServer"/>
+    <DeviceCapability Name="location"/>
   </Capabilities>
 </Package>

@@ -56,6 +56,8 @@ namespace Glow
 
             // Register for commands from the connection manager
             App.GlowBack.ConnectionManager.OnCommandRecieved += ConnectionManager_OnCommandRecieved;
+            App.GlowBack.ConnectionManager.OnClientConnected += ConnectionManager_OnClientConnected;
+            App.GlowBack.ConnectionManager.OnClientDisconnected += ConnectionManager_OnClientDisconnected;
 
             m_paneControls[GlowPrograms.GlowControl] = new GlowControlPane(this);
             m_paneControls[GlowPrograms.ManualColors] = new ManualColorPane(this);
@@ -72,7 +74,8 @@ namespace Glow
             Storyboard.SetTarget(ui_animContentGrid, ui_contentGrid);
             SetPane(App.GlowBack.AppSetting.LastShownProgram);           
         }
-        
+
+
         private void MainLanding_Loaded(object sender, RoutedEventArgs e)
         {
             // When we are loaded animate in
@@ -234,6 +237,40 @@ namespace Glow
 
             // Send the command
             m_paneControls[command.Program].OnCommand(command);
-        }       
+        }
+
+        #region Connection Status UI
+
+        private void AnimConnectionState_Completed(object sender, object e)
+        {
+            if(ui_connectionLostHolder.Height == 0)
+            {
+                ui_connectionLostHolder.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ConnectionManager_OnClientDisconnected()
+        {
+            ToggleConnectionState(true);
+        }
+
+        private void ConnectionManager_OnClientConnected()
+        {
+            ToggleConnectionState(false);
+        }
+
+        private async void ToggleConnectionState(bool isShowing)
+        {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                ui_connectionLostHolder.Visibility = Visibility.Visible;
+                ui_animConnectionState.To = isShowing ? 25 : 0;
+                ui_animConnectionState.From = ui_connectionLostHolder.Height;
+
+                ui_storyConnectionState.Begin();
+            });
+        }
+
+        #endregion
     }
 }

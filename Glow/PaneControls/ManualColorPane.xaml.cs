@@ -1,6 +1,7 @@
 ﻿using Glow.Interfaces;
 using GlowCommon;
 using GlowCommon.DataObjects;
+using Microsoft.Band;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,7 +63,7 @@ namespace Glow.PageControls
         }
 
 
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             m_timer = new DispatcherTimer();
             m_timer.Interval = new TimeSpan(0, 0, 0, 0, 50);
