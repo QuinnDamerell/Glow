@@ -13,7 +13,7 @@ namespace GlowPi.Programs
     class ManualColor : IProgram
     {
         bool m_isActive = false;
-        ManualColorSettings m_settings = new ManualColorSettings();
+        ManualColorSettings m_settings = new ManualColorSettings(true);
         IProgramController m_controller;
 
         public void InitProgram(IProgramController controller)
@@ -36,6 +36,9 @@ namespace GlowPi.Programs
         public void Activate()
         {
             m_isActive = true;
+
+            // Lower the work time since we don't use the callback
+            m_controller.SetWorkRate(500);
 
             // Set the LEDs to the current values.
             SetCurrentValues();

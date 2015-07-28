@@ -6,8 +6,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" x:Name="ui_pageRoot">    
+        <Grid.Resources>
+            <Storyboard x:Name="ui_storyPageRoot">
+                <DoubleAnimation x:Name="ui_animPageRoot" Storyboard.TargetName="ui_pageRoot" Storyboard.TargetProperty="Opacity" From="0" To="1" />
+            </Storyboard>
+        </Grid.Resources>        
         
         <SplitView x:Name="ui_spitView" DisplayMode="CompactOverlay" >
             <SplitView.Pane>
@@ -21,39 +26,58 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     
-                    <!-- Hamburger Icon -->
-                    <Button VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Click="MenuButton_Click" Padding="12">
+                    <!-- Glow  -->
+                    <Button x:Name="ui_glowButton" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Click="GlowButton_Click" Padding="12">
                         <Button.Content>
-                            <SymbolIcon Symbol="AlignCenter" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
+                            <Image Source="Assets/logo.png"  />
                         </Button.Content>
                     </Button>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Menu" VerticalAlignment="Center" FontSize="20" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}" Tapped="MenuText_Tapped"/>
-
+                    
                     <!-- Manual Color -->
-                    <Button Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="ManualColor_Click">
+                    <Button x:Name="ui_manualColorButton" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="ManualColor_Click">
                         <Button.Content>
                             <SymbolIcon Symbol="AllApps" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
                         </Button.Content>
-                    </Button>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Manual Color" VerticalAlignment="Center" FontSize="20" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}" Tapped="ManualColor_Tapped"/>
+                    </Button>           
 
                     <!-- Clock -->
-                    <Button Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="Clock_Click">
+                    <Button x:Name="ui_clockButton" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="Clock_Click">
                         <Button.Content>
                             <SymbolIcon Symbol="Clock" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
                         </Button.Content>
                     </Button>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Clock" VerticalAlignment="Center" FontSize="20" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}" Tapped="Clock_Tapped"/>
+                    
+                    <!-- Weather -->
+                    <Button x:Name="ui_weatherButton" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="Weather_Click">
+                        <Button.Content>
+                            <SymbolIcon Symbol="Calendar" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
+                        </Button.Content>
+                    </Button>
+                    
+                     <!-- Weather Cam -->
+                    <Button x:Name="ui_weatherCamButton" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="WeatherCam_Click">
+                        <Button.Content>
+                            <SymbolIcon Symbol="Camera" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
+                        </Button.Content>
+                    </Button>   
                 </Grid>
             </SplitView.Pane>
             <SplitView.Content>
                 <Grid x:Name="ui_contentGrid">
-                    
+                    <Grid.Resources>
+                        <Storyboard x:Name="ui_storyContentGrid">
+                            <DoubleAnimation x:Name="ui_animContentGrid" Storyboard.TargetName="ui_contentGrid" Storyboard.TargetProperty="Opacity" Completed="AnimContentGrid_Completed" Duration="0:0:0.3"/>
+                        </Storyboard>    
+                    </Grid.Resources>  
+                    <TextBlock />
                 </Grid>
             </SplitView.Content>
         </SplitView>
+        <Grid x:Name="ui_accentColorGrid" Background="{ThemeResource HyperlinkPressedForegroundThemeBrush }" Visibility="Collapsed" />
     </Grid>
 </Page>

@@ -24,5 +24,19 @@ namespace GlowCommon.DataObjects
             }
         }
         private bool m_showShortIntro = true;
+
+        public GlowPrograms LastShownProgram
+        {
+            get
+            {
+                return (GlowPrograms)SettingsHelpers<int>.GetStringSeralizedValueOrDefault(ref m_lastShownProgram, (int)GlowPrograms.None, (int)GlowPrograms.GlowControl, "AppSettings.LastShownProgramInt");
+            }
+            set
+            {
+                m_lastShownProgram = (int)value;
+                SettingsHelpers<int>.SetStringSeralizedNewValues(m_lastShownProgram, "AppSettings.LastShownProgramInt");
+            }
+        }
+        private int m_lastShownProgram = (int)GlowPrograms.None;
     }
 }

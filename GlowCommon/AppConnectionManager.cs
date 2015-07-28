@@ -11,6 +11,8 @@ namespace GlowCommon
 {
     public delegate void ConnectionEvent();
 
+    public delegate void CommandRecieved(Command command);
+
     public class AppConnectionManager : IDiscoveryServerListener, ICommandServerListener
     {
         /// <summary>
@@ -27,6 +29,11 @@ namespace GlowCommon
         /// Fired when a client is disconnected
         /// </summary>
         public event ConnectionEvent OnClientDisconnected;
+
+        /// <summary>
+        /// Fired when a message is received
+        /// </summary>
+        public event CommandRecieved OnCommandRecieved;
 
         //
         // Private Vars
@@ -127,7 +134,10 @@ namespace GlowCommon
         /// <returns></returns>
         public Command OnCommand(Command command)
         {
-            // #todo handle   
+            if(OnCommandRecieved != null)
+            {
+                OnCommandRecieved(command);
+            }
             return null;
         }
 
@@ -140,7 +150,7 @@ namespace GlowCommon
         {
             lock (objectLock)
             {
-                if(!IsConnected)
+                if(!IsConnected || m_commandServer == null)
                 {
                     return false;
                 }

@@ -1,4 +1,5 @@
-﻿using GlowCommon;
+﻿using Glow.Interfaces;
+using GlowCommon;
 using GlowCommon.DataObjects;
 using System;
 using System.Collections.Generic;
@@ -22,18 +23,44 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Glow.PageControls
 {
-    public sealed partial class ManualColorPane : UserControl
+    public sealed partial class ManualColorPane : UserControl, IProgramPane
     {
+        /// <summary>
+        /// Indicates the status of the program
+        /// </summary>
+        bool m_programEnabled = false;
+
+        /// <summary>
+        /// Holds a reference to the master controller
+        /// </summary>
+        IProgramController m_controller;
+
         DispatcherTimer m_timer;
         ManualColorSettings m_lastSettings = new ManualColorSettings();
         bool m_hasUpdates = true;
         CoreDispatcher m_dispatcher;
-        public ManualColorPane()
+
+        public ManualColorPane(IProgramController controller)
         {
             this.InitializeComponent();
             this.Loaded += MainPage_Loaded;
             m_dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+            m_controller = controller;
+
+            // Get our inital state
+            GetAndSetProgramState();
         }
+
+        public void OnProgramListChanged()
+        {
+            // Check our state
+            GetAndSetProgramState();
+        }
+
+        public void OnCommand(Command cmd)
+        {
+        }
+
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -54,6 +81,7 @@ namespace Glow.PageControls
             m_hasUpdates = false;
 
             ManualColorSettings newSettings = new ManualColorSettings();
+            newSettings.CurrentLedState = new List<SerlizableLed>();
             newSettings.CurrentLedState.Add(new SerlizableLed(GetValue(u_led1r), GetValue(u_led1g), GetValue(u_led1b), GetValue(u_led1i)));
             newSettings.CurrentLedState.Add(new SerlizableLed(GetValue(u_led2r), GetValue(u_led2g), GetValue(u_led2b), GetValue(u_led2i)));
             newSettings.CurrentLedState.Add(new SerlizableLed(GetValue(u_led3r), GetValue(u_led3g), GetValue(u_led3b), GetValue(u_led3i)));
@@ -116,6 +144,26 @@ namespace Glow.PageControls
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             m_hasUpdates = true;
+        }
+
+        private async void GetAndSetProgramState()
+        {
+            m_programEnabled = m_controller.GetProgramState(GlowCommon.GlowPrograms.ManualColors);
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                ui_manualColorEnable.IsOn = m_controller.GetProgramState(GlowCommon.GlowPrograms.ManualColors);
+            });
+        }
+
+        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (m_programEnabled == ui_manualColorEnable.IsOn)
+            {
+                return;
+            }
+
+            m_programEnabled = ui_manualColorEnable.IsOn;
+            m_controller.ToggleProgram(GlowCommon.GlowPrograms.ManualColors, m_programEnabled);
         }
     }
 }

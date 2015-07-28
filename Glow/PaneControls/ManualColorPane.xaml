@@ -5,6 +5,7 @@
     xmlns:local="using:Glow.PageControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:custom="clr-namespace:Glow.PaneControls"
     mc:Ignorable="d"
     d:DesignHeight="800"
     d:DesignWidth="600">
@@ -12,6 +13,15 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled">
             <StackPanel>
+                <Grid Background="{ThemeResource AppBarItemPointerOverBackgroundThemeBrush}" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ToggleSwitch x:Name="ui_manualColorEnable" Grid.Column="2" Toggled="ToggleSwitch_Toggled"/>
+                </Grid>
                 <Grid Padding="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>

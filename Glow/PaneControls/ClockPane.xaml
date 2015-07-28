@@ -6,10 +6,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
+    d:DesignHeight="500"
     d:DesignWidth="400">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock Text="Nothing to see here. Move Along."/>
-    </Grid>
+    <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="8">
+        <TextBlock Style="{ThemeResource HeaderTextBlockStyle}" Text="Clock"/>
+        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Beautiful Color Telling Time"/>
+        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="The clock extension will turn your glow objects into brightly colored center pieces that can be used to approximate the time. The current time will be shown on the objects in descending order, month, day of the week, hours, minutes, seconds." Margin="0,12"/>
+        <TextBlock Text="Enable Clock" Margin="0,8" Style="{ThemeResource BaseTextBlockStyle}"/>
+        <ToggleSwitch x:Name="ui_clockEnable" Toggled="ClockEnable_Toggled"/>
+        <TextBlock Text="Clock Colors" Margin="0,8" Style="{ThemeResource BaseTextBlockStyle}"/>
+        <ComboBox x:Name="ui_colorType" SelectedIndex="0" SelectionChanged="ColorType_SelectionChanged" MinWidth="150">
+            <ComboBoxItem>Color</ComboBoxItem>
+            <ComboBoxItem>Gray Scale</ComboBoxItem>
+        </ComboBox>
+    </StackPanel>
 </UserControl>

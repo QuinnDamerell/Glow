@@ -12,7 +12,11 @@ namespace GlowPi.Programs
     class Clock : IProgram
     {
         IProgramController m_controller;
-        ClockSettings m_settings = new ClockSettings();
+        ClockSettings m_settings = new ClockSettings(true);
+
+        double[] m_redRange =   { 1, 1, 0, 0, 0, 1 };
+        double[] m_blueRange =  { 0, 1, 1, 1, 0, 0 };
+        double[] m_greenRange = { 0, 0, 0, 1, 1, 1 };
 
         public void InitProgram(IProgramController controller)
         {
@@ -35,29 +39,44 @@ namespace GlowPi.Programs
 
         public void DoWork(uint timeElaspedMs)
         {
-            System.Diagnostics.Debug.WriteLine("Clock do work time:"+timeElaspedMs);
-
             // Get the time now. 
             DateTime now = DateTime.Now;
 
             // Get the current time percentages
             int currentHours = now.Hour > 12 ? now.Hour - 12 : now.Hour;
+            double month = now.Month / 12.0;
             double days = now.Day / 31.0;
             double hours = currentHours / 12.0;
             double minutes = now.Minute / 60.0;
             double seconds = now.Second / 60.0;
 
-            // For gray scale, just send those values down for all.
-            m_controller.GetLed(0).Animate(days, days, days, 1.0, new TimeSpan(0, 0, 1), AnimationType.Linear);
-            m_controller.GetLed(1).Animate(hours, hours, hours, 1.0, new TimeSpan(0, 0, 1), AnimationType.Linear);
-            m_controller.GetLed(2).Animate(minutes, minutes, minutes, 1.0, new TimeSpan(0, 0, 1), AnimationType.Linear);
-            m_controller.GetLed(3).Animate(seconds, seconds, seconds, 1.0, new TimeSpan(0, 0, 0, 0, 500), AnimationType.Linear);
+            if(m_settings.ColorType == ClockSettings.ColorTypes.GrayScale)
+            {
+                m_controller.GetLed(0).Animate(month, month, month, 1.0, new TimeSpan(0, 0, 3), AnimationType.Linear);
+                m_controller.GetLed(1).Animate(days, days, days, 1.0, new TimeSpan(0, 0, 3), AnimationType.Linear);
+                m_controller.GetLed(2).Animate(hours, hours, hours, 1.0, new TimeSpan(0, 0, 3), AnimationType.Linear);
+                m_controller.GetLed(3).Animate(minutes, minutes, minutes, 1.0, new TimeSpan(0, 0, 3), AnimationType.Linear);
+                m_controller.GetLed(4).Animate(seconds, seconds, seconds, 1.0, new TimeSpan(0, 0, 0, 0, 500), AnimationType.Linear);
+            }
+            else
+            {
+                SetColor(m_controller.GetLed(0), month, new TimeSpan(0, 0, 3));
+                SetColor(m_controller.GetLed(1), days, new TimeSpan(0, 0, 3));
+                SetColor(m_controller.GetLed(2), hours, new TimeSpan(0, 0, 3));
+                SetColor(m_controller.GetLed(3), minutes, new TimeSpan(0, 0, 3));
+                SetColor(m_controller.GetLed(4), seconds, new TimeSpan(0, 0, 0, 0, 500));
+            }
         }
 
         public Command CommandRecieved(Command command)
         {
             switch(command.MessageId)
             {
+                case Command.COMMAND_RECIEVE_SETTINGS:
+                    {
+                        m_settings = Newtonsoft.Json.JsonConvert.DeserializeObject<ClockSettings>(command.Message);
+                        break;
+                    }
                 case Command.COMMAND_GET_SETTINGS:
                     {
                         // Send the settings
@@ -69,6 +88,31 @@ namespace GlowPi.Programs
                     }
             }
             return null;
+        }
+
+        private void SetColor(AnimatedLed led, double value, TimeSpan time)
+        {
+            double red = 0, green = 0, blue = 0;
+
+            // Find what bucket we are in
+            int rangeBot = (int)Math.Floor(Math.Abs(((value - .001) * m_blueRange.Length-1)));
+            int rangeTop = (int)Math.Floor(Math.Abs(((value - .001) * m_blueRange.Length-1)))+1;
+
+            // Find where we are in that bucket-
+            double placeInRange = ((value * m_blueRange.Length * m_blueRange.Length) % m_blueRange.Length) / 6.0;
+            if(value == 1.0)
+            {
+                // Special case
+                placeInRange = 1;
+            }
+
+            // Find the values per color
+            red = m_redRange[rangeBot] + (m_redRange[rangeTop] - m_redRange[rangeBot]) * placeInRange;
+            green = m_greenRange[rangeBot] + (m_greenRange[rangeTop] - m_greenRange[rangeBot]) * placeInRange;
+            blue = m_blueRange[rangeBot] + (m_blueRange[rangeTop] - m_blueRange[rangeBot]) * placeInRange;
+
+            // Animate the LED
+            led.Animate(red, green, blue, 1.0, time, AnimationType.Linear);
         }
     }
 }

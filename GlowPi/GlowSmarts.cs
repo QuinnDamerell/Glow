@@ -29,6 +29,7 @@ namespace GlowPi
         bool m_continueWorking = false;
         uint m_workRateMs = 500;
         DateTime m_lastWorkTime;
+        bool m_stopWorkAndLoop = false;
 
         // Program logic
 
@@ -71,8 +72,7 @@ namespace GlowPi
             m_programCache.Add(GlowPrograms.WeatherCam, program);
 
             // Create a command listener
-            //m_commandServer = new CommandServer(this);
-           // m_commandServer.Setup(CommandServer.GLOW_SERVER_PORT);
+            m_commandServer = new CommandServer(this, CommandServer.CommmandServerMode.Server);
 
             // Setup the main worker thread.
             m_continueWorking = true;
@@ -125,6 +125,9 @@ namespace GlowPi
                 // Add it to the list of pending changes, this will be updated on the next tick.
                 m_programModifications.Add(new KeyValuePair<GlowPrograms, bool>(program, enable));
             }
+
+            // Prevent programs from doing work if we need to change them.
+            m_stopWorkAndLoop = true;
         }
 
         public bool IsProgramEnabled(GlowPrograms program)
@@ -146,8 +149,7 @@ namespace GlowPi
                     {
                         // We need to change up some programs.
                         HandelProgramChanges();
-                    }
-       
+                    }       
 
                     // 2: Let all of the programs do work.
                     lock(m_activePrograms)
@@ -156,6 +158,10 @@ namespace GlowPi
                         {
                             TimeSpan workTimeDiff = DateTime.Now - m_lastWorkTime;
                             program.Value.DoWork((uint)workTimeDiff.TotalMilliseconds);
+                            if(m_stopWorkAndLoop)
+                            {
+                                break;
+                            }
                         }
                     }
 
@@ -164,10 +170,11 @@ namespace GlowPi
 
                     // 3: Sleep
                     int sleepTime =  (int)m_workRateMs - (int)(DateTime.Now - begin).TotalMilliseconds;
-                    if(sleepTime > 0)
+                    if(sleepTime > 0 && !m_stopWorkAndLoop)
                     {
                         System.Threading.Tasks.Task.Delay(sleepTime).Wait();
-                    }                    
+                    }
+                    m_stopWorkAndLoop = false;
                 }
                 catch(Exception e)
                 {
@@ -237,17 +244,17 @@ namespace GlowPi
 
         public void OnConnect()
         {
-            throw new NotImplementedException();
+            // ignore for now
         }
 
         public void OnDisconnected()
         {
-            throw new NotImplementedException();
+            // ignore for now
         }
 
         public void OnFatalError()
         {
-            throw new NotImplementedException();
+            // ignore for now
         }
     }
 }

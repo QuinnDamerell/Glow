@@ -10,9 +10,16 @@ namespace GlowCommon.DataObjects
     {
         public enum ColorTypes
         {
+            Color = 0,
+            GrayScale,            
             None,
-            GrayScale,
-            Color
+        }
+
+        bool m_readSettings = false;
+
+        public ClockSettings(bool readSeattings = false)
+        {
+            m_readSettings = readSeattings;
         }
 
         //
@@ -22,15 +29,22 @@ namespace GlowCommon.DataObjects
         {
             get
             {
-                return SettingsHelpers<ColorTypes>.GetValueOrDefault(ref m_colorType, ColorTypes.None, ColorTypes.GrayScale, "Clock.ColorType");
+                if (m_readSettings)
+                {
+                    return (ColorTypes)SettingsHelpers<int>.GetValueOrDefault(ref m_colorType, (int)ColorTypes.None, (int)ColorTypes.Color, "Clock.ColorType");
+                }
+                else
+                {
+                    return (ColorTypes)m_colorType;
+                }
             }
             set
             {
-                m_colorType = value;
-                SettingsHelpers<ColorTypes>.SetNewValues(m_colorType, "Clock.ColorType");
+                m_colorType = (int)value;
+                SettingsHelpers<int>.SetNewValues(m_colorType, "Clock.ColorType");
             }
         }
-        private ColorTypes m_colorType = ColorTypes.None;
+        private int m_colorType = (int)ColorTypes.None;
         
         //
         // Constructor

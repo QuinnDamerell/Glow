@@ -24,6 +24,16 @@ namespace GlowCommon.DataObjects
             Disabled,
         }
 
+        /// <summary>
+        /// Indicates if we should read settings from the store.
+        /// </summary>
+        private bool m_readSettings = false;
+
+        public GlowControlSettings(bool readSettings = false)
+        {
+            m_readSettings = readSettings;
+        }
+
         //
         // Helpers
         //
@@ -43,7 +53,14 @@ namespace GlowCommon.DataObjects
         {
             get
             {
-                return SettingsHelpers<Dictionary<GlowPrograms, ProgramState>>.GetStringSeralizedValueOrDefault(ref m_programStateList, null, new Dictionary<GlowPrograms, ProgramState>(), "GlowControl.ProgramStateList");
+                if (m_readSettings)
+                {
+                    return SettingsHelpers<Dictionary<GlowPrograms, ProgramState>>.GetStringSeralizedValueOrDefault(ref m_programStateList, null, new Dictionary<GlowPrograms, ProgramState>(), "GlowControl.ProgramStateList");
+                }
+                else
+                {
+                    return m_programStateList;
+                }
             }
             set
             {
@@ -60,8 +77,15 @@ namespace GlowCommon.DataObjects
         {
             get
             {
-                // Default to 30 seconds
-                return SettingsHelpers<uint>.GetValueOrDefault(ref m_programCycleTimeMs, 0, 30 * 1000, "GlowControl.ProgramCycleTimeMs");
+                if (m_readSettings)
+                {
+                    // Default to 30 seconds
+                    return SettingsHelpers<uint>.GetValueOrDefault(ref m_programCycleTimeMs, 0, 30 * 1000, "GlowControl.ProgramCycleTimeMs");
+                }
+                else
+                {
+                    return m_programCycleTimeMs;
+                }
             }
             set
             {
@@ -70,6 +94,31 @@ namespace GlowCommon.DataObjects
             }
         }
         private uint m_programCycleTimeMs = 0;
+
+
+        /// <summary>
+        /// The over all intensity.
+        /// </summary>
+        public double MasterIntensity
+        {
+            get
+            {
+                if (m_readSettings)
+                {
+                    return SettingsHelpers<double>.GetValueOrDefault(ref m_masterIntensity, -1, 1, "GlowControl.MasterIntensity");
+                }
+                else
+                {
+                    return m_programCycleTimeMs;
+                }
+            }
+            set
+            {
+                m_masterIntensity = value;
+                SettingsHelpers<double>.SetNewValues(m_programCycleTimeMs, "GlowControl.MasterIntensity");
+            }
+        }
+        private double m_masterIntensity = -1;
 
     }
 }

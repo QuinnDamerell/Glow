@@ -12,7 +12,7 @@ namespace GlowPi.Programs
     class GlowControl : IProgram
     {
         IProgramController m_controller;
-        GlowControlSettings m_settings = new GlowControlSettings();
+        GlowControlSettings m_settings = new GlowControlSettings(true);
 
         // Cycle vars
         int m_nextCycleTimeMs;
@@ -21,13 +21,12 @@ namespace GlowPi.Programs
         {
             m_controller = controller;
 
-            // Enable the default programs
+            // Enable the background programs
             m_controller.ToggleProgram(GlowPrograms.GlowControl, true);
             m_controller.ToggleProgram(GlowPrograms.DiscoveryControl, true);
-            m_controller.ToggleProgram(GlowPrograms.ManualColors, true);
 
             // Check if the settings need inited
-            //if (m_settings.ProgramStateList.Count == 0) #todo renable
+            if (m_settings.ProgramStateList.Count == 0)
             {
                 // Create all of the programs with their defaults.
                 m_settings.ProgramStateList.Clear();
@@ -40,8 +39,8 @@ namespace GlowPi.Programs
                 m_settings.SaveSettings();
             }
 
-            // Get the current cycle time
-            m_nextCycleTimeMs = (int)m_settings.ProgramCycleTimeMs;
+            // Negate the cycle time so we pick up a program.
+            m_nextCycleTimeMs = -10;
         }
 
         public void Activate()
@@ -115,7 +114,13 @@ namespace GlowPi.Programs
                     }
                     else
                     {
-                        // We didn't find one, just keep the running program running.
+                        // Check if this program should be running.
+                        if(m_settings.ProgramStateList[runningProgram] != GlowControlSettings.ProgramState.Eligible)
+                        {
+                            // We need to stop this program and put the system to sleep.      
+                            m_controller.ToggleProgram(runningProgram, false);
+                            GoToSleepState();
+                        }
                     }                    
                 }
                 else
@@ -147,17 +152,47 @@ namespace GlowPi.Programs
 
         public Command CommandRecieved(Command command)
         {
+            switch(command.MessageId)
+            {
+                case Command.COMMAND_GET_SETTINGS:
+                    return GetCurrentSettings();
+                case Command.COMMAND_RECIEVE_SETTINGS:
+                    HandleNewSettings(command.Message);
+                    break;
+            }
             return null;
+        }
+
+        private Command GetCurrentSettings()
+        {
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(m_settings);
+
+            // Make the command
+            Command cmd = new Command();
+            cmd.Message = json;
+            cmd.MessageId = Command.COMMAND_RECIEVE_SETTINGS;
+            cmd.Program = GlowPrograms.GlowControl;
+            return cmd;
+        }
+
+        private void HandleNewSettings(string json)
+        {
+            // Parse the new settings.
+            m_settings = Newtonsoft.Json.JsonConvert.DeserializeObject<GlowControlSettings>(json);
+            m_settings.SaveSettings();
+
+            // Set the work time to something that will make it operate next time.
+            m_nextCycleTimeMs = -10;
         }
         
         private void GoToSleepState()
         {
             // In the sleep state we want to turn off the balls...
-            m_controller.GetLed(0).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
-            m_controller.GetLed(1).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
-            m_controller.GetLed(2).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
-            m_controller.GetLed(3).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
-            m_controller.GetLed(4).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 3), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(0).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 5), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(1).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 5), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(2).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 5), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(3).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 5), WindowsIotLedDriver.AnimationType.Linear);
+            m_controller.GetLed(4).Animate(0.0, 0.0, 0.0, 1.0, new TimeSpan(0, 0, 5), WindowsIotLedDriver.AnimationType.Linear);
 
             // And slow down the work tick.
             m_controller.SetWorkRate(500);

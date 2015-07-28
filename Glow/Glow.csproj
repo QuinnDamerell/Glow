@@ -97,14 +97,26 @@
     <Compile Include="GlowDiscovery.xaml.cs">
       <DependentUpon>GlowDiscovery.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IGlowControlListener.cs" />
+    <Compile Include="Interfaces\IProgramController.cs" />
+    <Compile Include="Interfaces\IProgramPane.cs" />
     <Compile Include="MainLanding.xaml.cs">
       <DependentUpon>MainLanding.xaml</DependentUpon>
     </Compile>
     <Compile Include="PaneControls\ClockPane.xaml.cs">
       <DependentUpon>ClockPane.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PaneControls\GlowControlPane.xaml.cs">
+      <DependentUpon>GlowControlPane.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PaneControls\ManualColorPane.xaml.cs">
       <DependentUpon>ManualColorPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PaneControls\WeatherCamPane.xaml.cs">
+      <DependentUpon>WeatherCamPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PaneControls\WeatherPane.xaml.cs">
+      <DependentUpon>WeatherPane.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -117,6 +129,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Logo.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\Logo.scale-100.png" />
     <Content Include="Assets\SmallLogo.scale-100.png" />
@@ -141,7 +154,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PaneControls\GlowControlPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PaneControls\ManualColorPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PaneControls\WeatherCamPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PaneControls\WeatherPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,6 +8,16 @@ namespace GlowCommon.DataObjects
 {
     public class ManualColorSettings
     {
+        /// <summary>
+        /// Indicates if we should attempt to read the current settings or not.
+        /// </summary>
+        bool m_readSettings = false;
+
+        public ManualColorSettings(bool readSettings = false)
+        {
+            m_readSettings = readSettings;
+        }
+
         //
         // Helpers
         //
@@ -28,12 +38,14 @@ namespace GlowCommon.DataObjects
         {
             get
             {
-                //return SettingsHelpers< List<SerlizableLed>>.GetStringSeralizedValueOrDefault(ref m_currentLedState, null, new List<SerlizableLed>(), "ManualColorSettings.CurrentLedState");
-                if(m_currentLedState == null)
+                if (m_readSettings)
                 {
-                    m_currentLedState = new List<SerlizableLed>();
+                    return SettingsHelpers<List<SerlizableLed>>.GetStringSeralizedValueOrDefault(ref m_currentLedState, null, new List<SerlizableLed>(), "ManualColorSettings.CurrentLedState");
                 }
-                return m_currentLedState;
+                else
+                {
+                    return m_currentLedState;
+                }               
             }
             set
             {
