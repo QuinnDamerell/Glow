@@ -75,7 +75,7 @@
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Update Speed" RequestedTheme="Dark" VerticalAlignment="Center" Margin="12"/>
-                <Slider x:Name="ui_liveColorChangeSpeed" Grid.Column="1" ValueChanged="LiveColorChangeSpeed_ValueChanged" Value="50" RequestedTheme="Dark"/>
+                <Slider x:Name="ui_liveColorChangeSpeed" Grid.Column="1" ValueChanged="LiveColorChangeSpeed_ValueChanged" Value="5" RequestedTheme="Dark"/>
                 <TextBlock x:Name="ui_liveColorChangeSpeedText" Grid.Column="2" Text="500ms" RequestedTheme="Dark" VerticalAlignment="Center" Margin="12"/>
             </Grid>         
         </Grid>

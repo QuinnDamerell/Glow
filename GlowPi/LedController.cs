@@ -15,7 +15,7 @@ namespace GlowPi
         public LedController()
         {
             // Create the controller
-            m_controller = new TLC5947Controller(6,5);
+            m_controller = new TLC5947Controller(6,13);
             m_controller.ToggleAnimation(true);
 
             // Create the LED array
