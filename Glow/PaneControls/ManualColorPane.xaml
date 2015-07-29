@@ -27,17 +27,20 @@
                     </Grid.RowDefinitions>
                     
                     <Button HorizontalAlignment="Stretch" Content="Live Mode" Tapped="LiveMode_Tapped"/>
-                </Grid>
-
-                <!--<picker:ColorPicker OnColorChanged="ColorPicker_OnColorChanged" Source="ms-appx:///Assets/Pickers/RBGColors.png" />-->
-                
+                </Grid>                
             </StackPanel>
         </ScrollViewer>
         
         <Grid x:Name="ui_liveModeHolder" Background="Black" Visibility="Collapsed">
+            <Grid.Resources>
+                <Storyboard x:Name="ui_storyLiveMode">
+                    <DoubleAnimation x:Name="ui_animLiveMode" Storyboard.TargetName="ui_liveModeHolder" Storyboard.TargetProperty="Opacity" Completed="AnimLiveMode_Completed" Duration="0:0:0.3"/>
+                </Storyboard>
+            </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             
             <ScrollViewer HorizontalAlignment="Center" VerticalScrollMode="Disabled" HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
@@ -58,12 +61,23 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <picker:ColorPicker Grid.Column="0" OnColorChanged="ColorPicker_OnColorChanged_0" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6" />
-                <picker:ColorPicker Grid.Column="1" OnColorChanged="ColorPicker_OnColorChanged_1" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6"  />
-                <picker:ColorPicker Grid.Column="2" OnColorChanged="ColorPicker_OnColorChanged_2" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6" />
-                <picker:ColorPicker Grid.Column="3" OnColorChanged="ColorPicker_OnColorChanged_3" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6" />
-                <picker:ColorPicker Grid.Column="4" OnColorChanged="ColorPicker_OnColorChanged_4" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6" />
-            </Grid>            
+                <picker:ColorPicker Grid.Column="0" OnColorChanged="ColorPicker_OnColorChanged_0" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
+                <picker:ColorPicker Grid.Column="1" OnColorChanged="ColorPicker_OnColorChanged_1" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6"  />
+                <picker:ColorPicker Grid.Column="2" OnColorChanged="ColorPicker_OnColorChanged_2" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
+                <picker:ColorPicker Grid.Column="3" OnColorChanged="ColorPicker_OnColorChanged_3" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
+                <picker:ColorPicker Grid.Column="4" OnColorChanged="ColorPicker_OnColorChanged_4" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
+            </Grid>      
+            
+            <Grid Grid.Row="2" HorizontalAlignment="Stretch" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Update Speed" RequestedTheme="Dark" VerticalAlignment="Center" Margin="12"/>
+                <Slider x:Name="ui_liveColorChangeSpeed" Grid.Column="1" ValueChanged="LiveColorChangeSpeed_ValueChanged" Value="50" RequestedTheme="Dark"/>
+                <TextBlock x:Name="ui_liveColorChangeSpeedText" Grid.Column="2" Text="500ms" RequestedTheme="Dark" VerticalAlignment="Center" Margin="12"/>
+            </Grid>         
         </Grid>
     </Grid>
 </UserControl>

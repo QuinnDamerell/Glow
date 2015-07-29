@@ -7,6 +7,8 @@ using GlowCommon.Interfaces;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 using GlowCommon.DataObjects;
+using System.IO;
+using System.Diagnostics;
 
 namespace GlowCommon
 {
@@ -32,6 +34,8 @@ namespace GlowCommon
         StreamSocket m_socket;
         DataWriter m_clientDataWriter;
         CommmandServerMode m_mode;
+        Queue<Command> m_commandQueue = new Queue<Command>();
+        bool m_isSendingCommand = false;
 
         //
         // Constructor
@@ -96,22 +100,53 @@ namespace GlowCommon
                 throw new Exception("The socket isn't open!");
             }
 
-            try
+            lock(m_commandQueue)
             {
-                // Send the message
-                await InternalSendMessage(cmd, m_clientDataWriter);
-            }
-            catch(Exception e)
-            {
-                // We failed, tell the consumer.
-                System.Diagnostics.Debug.WriteLine("Send Message Failed: " + e.Message);
-                m_socket = null;
-                m_clientDataWriter = null;
-                m_listener.OnDisconnected();
-                return false;                
+                // Add the command to the queue
+                m_commandQueue.Enqueue(cmd);
+
+                // Check to see if we should send 
+                if (m_isSendingCommand)
+                {
+                    // If we are already sending just add the command to be sent later.                    
+                    return true;
+                }
+                else
+                {
+                    // If we are not sending we need to send.
+                    m_isSendingCommand = true;
+                }
             }
 
-            return true;
+            while (true)
+            {
+                // Grab the next command to send.
+                Command currentCommand = null;
+                lock (m_commandQueue)
+                {
+                    if (m_commandQueue.Count == 0)
+                    {
+                        m_isSendingCommand = false;
+                        return true;
+                    }
+                    currentCommand = m_commandQueue.Dequeue();
+                }
+
+                // Try to send it.
+                try
+                {
+                    await InternalSendMessage(currentCommand, m_clientDataWriter);
+                }
+                catch (Exception e)
+                {
+                    // We failed, tell the consumer.
+                    System.Diagnostics.Debug.WriteLine("Send Message Failed: " + e.Message);
+                    m_socket = null;
+                    m_clientDataWriter = null;
+                    m_listener.OnDisconnected();
+                    return false;
+                }
+            }
         }
 
         /// <summary>
@@ -183,38 +218,27 @@ namespace GlowCommon
         {
             // Wait for a new message, here we wait for enough data to represent the string size
             // if we don't get all of the data, the socket was closed.
-            uint waitData = await reader.LoadAsync(sizeof(uint));
-            if (waitData != sizeof(uint))
+            UInt32 sizeFieldCount = await reader.LoadAsync(sizeof(UInt32));
+            if (sizeFieldCount != sizeof(uint))
             {
                 // We didn't get it all, the socket is closed.
                 throw new Exception("Socket closed");
             }
-            // Get the string size
-            uint stringLen = reader.ReadUInt32();
 
-            // Now wait for the actual string data
-            uint stringWaitData = await reader.LoadAsync(stringLen);
-            if (stringWaitData != stringLen)
+            // Read the string.
+            uint stringLength = reader.ReadUInt32();
+            uint actualStringLength = await reader.LoadAsync(stringLength);
+            if (stringLength != actualStringLength)
             {
-                // We couldn't read the full string length.
+                // The underlying socket was closed before we were able to read the whole data.
                 throw new Exception("Socket closed");
-            }
-
+            }        
+            
             // Get the actual string
-            string commandString = reader.ReadString(stringLen);
-
-            if (reader.UnconsumedBufferLength != 0)
-            {
-                string str = reader.ReadString(reader.UnconsumedBufferLength);
-                throw new Exception(str);
-            }
+            string commandString = reader.ReadString(actualStringLength);
 
             // Parse the command
-            Command cmd = Newtonsoft.Json.JsonConvert.DeserializeObject<Command>(commandString);
-
-
-
-            return cmd;
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Command>(commandString);
         }
 
         private async Task InternalSendMessage(Command cmd, DataWriter writer)
@@ -231,10 +255,10 @@ namespace GlowCommon
 
             // Serialize the cmd
             string cmdJson = Newtonsoft.Json.JsonConvert.SerializeObject(cmd);
-            writer.WriteUInt32((uint)cmdJson.Length);
+            UInt32 stringSize = writer.MeasureString(cmdJson);
+            writer.WriteUInt32(stringSize);
             writer.WriteString(cmdJson);
             await writer.StoreAsync();
-            await writer.FlushAsync();
         }
     }
 }

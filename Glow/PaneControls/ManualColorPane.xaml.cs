@@ -132,6 +132,7 @@ namespace Glow.PageControls
         ManualColorSettings m_liveColorSettings = new ManualColorSettings();
         bool isSending = false;
         byte[,] m_liveColor = new byte[5,3];
+        int m_liveColorUpdateSpeedMs = 500;
 
         private void ColorPicker_OnColorChanged_0(object sender, Controls.OnColorChangedArgs e)
         {
@@ -202,11 +203,11 @@ namespace Glow.PageControls
             }
 
             m_liveColorSettings.CurrentLedStateList[0].Clear();
-            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[0, 0] / 255.0, m_liveColor[0, 1] / 255.0, m_liveColor[0, 2] / 255.0, 1.0, 0));
-            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[1, 0] / 255.0, m_liveColor[1, 1] / 255.0, m_liveColor[1, 2] / 255.0, 1.0, 0));
-            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[2, 0] / 255.0, m_liveColor[2, 1] / 255.0, m_liveColor[2, 2] / 255.0, 1.0, 0));
-            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[3, 0] / 255.0, m_liveColor[3, 1] / 255.0, m_liveColor[3, 2] / 255.0, 1.0, 0));
-            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[4, 0] / 255.0, m_liveColor[4, 1] / 255.0, m_liveColor[4, 2] / 255.0, 1.0, 0));
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[0, 0] / 255.0, m_liveColor[0, 1] / 255.0, m_liveColor[0, 2] / 255.0, 1.0, m_liveColorUpdateSpeedMs));
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[1, 0] / 255.0, m_liveColor[1, 1] / 255.0, m_liveColor[1, 2] / 255.0, 1.0, m_liveColorUpdateSpeedMs));
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[2, 0] / 255.0, m_liveColor[2, 1] / 255.0, m_liveColor[2, 2] / 255.0, 1.0, m_liveColorUpdateSpeedMs));
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[3, 0] / 255.0, m_liveColor[3, 1] / 255.0, m_liveColor[3, 2] / 255.0, 1.0, m_liveColorUpdateSpeedMs));
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[4, 0] / 255.0, m_liveColor[4, 1] / 255.0, m_liveColor[4, 2] / 255.0, 1.0, m_liveColorUpdateSpeedMs));
 
             // Send the settings
             await SendNewSettings(m_liveColorSettings);
@@ -215,14 +216,42 @@ namespace Glow.PageControls
 
         private void LiveMode_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            ui_liveModeHolder.Visibility = Visibility.Visible;
+            FadeLiveMode(true);
         }
 
         private void Exit_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            ui_liveModeHolder.Visibility = Visibility.Collapsed;
+            FadeLiveMode(false);
+        }
+
+        private void AnimLiveMode_Completed(object sender, object e)
+        {
+            if(ui_liveModeHolder.Opacity ==0)
+            {
+                ui_liveModeHolder.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void FadeLiveMode(bool fadeIn)
+        {
+            ui_liveModeHolder.Visibility = Visibility.Visible;
+            ui_liveModeHolder.Opacity = fadeIn ? 0 : 1;
+            ui_animLiveMode.To = fadeIn ? 1 : 0;
+            ui_animLiveMode.From = fadeIn ? 0 : 1;
+            ui_storyLiveMode.Begin();
+        }
+
+        private void LiveColorChangeSpeed_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            m_liveColorUpdateSpeedMs = (int)e.NewValue * 100;
+            if (ui_liveColorChangeSpeedText != null)
+            {
+                ui_liveColorChangeSpeedText.Text = m_liveColorUpdateSpeedMs > 1000 ? $"{m_liveColorUpdateSpeedMs / 1000}s" : $"{m_liveColorUpdateSpeedMs}ms";
+            }
         }
 
         #endregion
+
+
     }
 }
