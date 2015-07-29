@@ -28,6 +28,7 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     
@@ -64,7 +65,14 @@
                         <Button.Content>
                             <SymbolIcon Symbol="Camera" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
                         </Button.Content>
-                    </Button>   
+                    </Button>
+
+                    <!-- Random Color -->
+                    <Button x:Name="ui_randomColor" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Padding="12" Click="RandomColor_Click">
+                        <Button.Content>
+                            <SymbolIcon Symbol="Shuffle" Foreground="{ThemeResource AppBarItemPressedForegroundThemeBrush}"/>
+                        </Button.Content>
+                    </Button>
                 </Grid>
             </SplitView.Pane>
             <SplitView.Content>

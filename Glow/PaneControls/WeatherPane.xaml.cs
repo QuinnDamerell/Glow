@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Services.Maps;
 using GlowCommon;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -113,7 +114,7 @@ namespace Glow.PaneControls
             }
             catch (Exception e)
             {
-
+                Debug.WriteLine("Failed to send weather settings " + e.Message);
             }
         }
     }

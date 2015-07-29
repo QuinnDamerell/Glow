@@ -101,6 +101,7 @@
     <Compile Include="Programs\DiscoveryControl.cs" />
     <Compile Include="Programs\GlowControl.cs" />
     <Compile Include="Programs\ManualColor.cs" />
+    <Compile Include="Programs\RandomColor.cs" />
     <Compile Include="Programs\Weather.cs" />
     <Compile Include="Programs\WeatherCam.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

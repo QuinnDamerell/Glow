@@ -63,7 +63,7 @@ namespace Glow.PaneControls
                 return false;
             }
 
-            if(m_settings.ProgramStateList[program] == GlowControlSettings.ProgramState.Eligible)
+            if(m_settings.ProgramStateList.ContainsKey(program) && m_settings.ProgramStateList[program] == GlowControlSettings.ProgramState.Eligible)
             {
                 return true;
             }

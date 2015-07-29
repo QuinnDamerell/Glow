@@ -71,6 +71,10 @@ namespace GlowPi
             program.InitProgram(this);
             m_programCache.Add(GlowPrograms.WeatherCam, program);
 
+            program = new RandomColor();
+            program.InitProgram(this);
+            m_programCache.Add(GlowPrograms.RandomColor, program);
+
             // Create a command listener
             m_commandServer = new CommandServer(this, CommandServer.CommmandServerMode.Server);
 

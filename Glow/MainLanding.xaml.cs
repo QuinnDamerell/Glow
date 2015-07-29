@@ -64,12 +64,15 @@ namespace Glow
             m_paneControls[GlowPrograms.Clock] = new ClockPane(this);
             m_paneControls[GlowPrograms.Weather] = new WeatherPane(this);
             m_paneControls[GlowPrograms.WeatherCam] = new WeatherCamPane(this);
+            m_paneControls[GlowPrograms.RandomColor] = new RandomColor(this);
 
             m_glowProgramNavIndex.Add(GlowPrograms.GlowControl, 0);
             m_glowProgramNavIndex.Add(GlowPrograms.ManualColors, 1);
             m_glowProgramNavIndex.Add(GlowPrograms.Clock, 2);
             m_glowProgramNavIndex.Add(GlowPrograms.Weather, 3);
             m_glowProgramNavIndex.Add(GlowPrograms.WeatherCam, 4);
+            m_glowProgramNavIndex.Add(GlowPrograms.RandomColor, 5);
+
 
             Storyboard.SetTarget(ui_animContentGrid, ui_contentGrid);
             SetPane(App.GlowBack.AppSetting.LastShownProgram);           
@@ -149,6 +152,11 @@ namespace Glow
             SetPane(GlowPrograms.WeatherCam);
         }
 
+        private void RandomColor_Click(object sender, RoutedEventArgs e)
+        {
+            SetPane(GlowPrograms.RandomColor);
+        }
+
         /// <summary>
         /// Called by the programs to get their current state.
         /// </summary>
@@ -217,6 +225,9 @@ namespace Glow
                                 break;
                             case 4:
                                 ui_weatherCamButton.Background = GetProgramState(program.Key) ? active : transparent;
+                                break;
+                            case 5:
+                                ui_randomColor.Background = GetProgramState(program.Key) ? active : transparent;
                                 break;
                         }
                     }

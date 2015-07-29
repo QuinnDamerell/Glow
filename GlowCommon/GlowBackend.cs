@@ -39,6 +39,7 @@ namespace GlowCommon
         Clock,
         Weather,
         WeatherCam,
+        RandomColor,
         None
     }
 

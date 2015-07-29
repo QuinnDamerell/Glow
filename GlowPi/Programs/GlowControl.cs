@@ -33,9 +33,10 @@ namespace GlowPi.Programs
                 m_settings.ProgramStateList.Add(GlowPrograms.GlowControl, GlowControlSettings.ProgramState.Background);
                 m_settings.ProgramStateList.Add(GlowPrograms.DiscoveryControl, GlowControlSettings.ProgramState.Background);
                 m_settings.ProgramStateList.Add(GlowPrograms.ManualColors, GlowControlSettings.ProgramState.Disabled);
-                m_settings.ProgramStateList.Add(GlowPrograms.Clock, GlowControlSettings.ProgramState.Eligible);
+                m_settings.ProgramStateList.Add(GlowPrograms.Clock, GlowControlSettings.ProgramState.Disabled);
                 m_settings.ProgramStateList.Add(GlowPrograms.Weather, GlowControlSettings.ProgramState.Disabled);
                 m_settings.ProgramStateList.Add(GlowPrograms.WeatherCam, GlowControlSettings.ProgramState.Disabled);
+                m_settings.ProgramStateList.Add(GlowPrograms.RandomColor, GlowControlSettings.ProgramState.Eligible);
                 m_settings.SaveSettings();
             }
 

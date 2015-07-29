@@ -115,6 +115,9 @@
     <Compile Include="PaneControls\ManualColorPane.xaml.cs">
       <DependentUpon>ManualColorPane.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PaneControls\RandomColor.xaml.cs">
+      <DependentUpon>RandomColor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PaneControls\WeatherCamPane.xaml.cs">
       <DependentUpon>WeatherCamPane.xaml</DependentUpon>
     </Compile>
@@ -168,6 +171,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PaneControls\ManualColorPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PaneControls\RandomColor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
