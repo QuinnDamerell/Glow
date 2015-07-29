@@ -16,15 +16,15 @@ namespace GlowCommon
         public double Green = 0.0;
         public double Blue = 0.0;
         public double Intensity = 0.0;
-        public double ChangeSpeedSeconds = 0.0;
+        public int ChangeSpeedMs = 0;
 
-        public SerlizableLed(double red, double green, double blue, double intensity, double timeSeconds)
+        public SerlizableLed(double red, double green, double blue, double intensity, int chagneTimeMs = 1000)
         {
             Red = red;
             Green = green;
             Blue = blue;
             Intensity = intensity;
-            ChangeSpeedSeconds = timeSeconds;
+            ChangeSpeedMs = chagneTimeMs;
         }
     }
 

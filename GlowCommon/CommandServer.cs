@@ -203,8 +203,18 @@ namespace GlowCommon
             // Get the actual string
             string commandString = reader.ReadString(stringLen);
 
+            if (reader.UnconsumedBufferLength != 0)
+            {
+                string str = reader.ReadString(reader.UnconsumedBufferLength);
+                throw new Exception(str);
+            }
+
             // Parse the command
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Command>(commandString);
+            Command cmd = Newtonsoft.Json.JsonConvert.DeserializeObject<Command>(commandString);
+
+
+
+            return cmd;
         }
 
         private async Task InternalSendMessage(Command cmd, DataWriter writer)

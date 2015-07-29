@@ -4,6 +4,7 @@ using GlowCommon.DataObjects;
 using Microsoft.Band;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -36,7 +37,6 @@ namespace Glow.PageControls
         /// </summary>
         IProgramController m_controller;
 
-        DispatcherTimer m_timer;
         ManualColorSettings m_lastSettings = new ManualColorSettings();
         bool m_hasUpdates = true;
         CoreDispatcher m_dispatcher;
@@ -44,11 +44,10 @@ namespace Glow.PageControls
         public ManualColorPane(IProgramController controller)
         {
             this.InitializeComponent();
-            this.Loaded += MainPage_Loaded;
             m_dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
             m_controller = controller;
 
-            // Get our inital state
+            // Get our initial state
             GetAndSetProgramState();
         }
 
@@ -62,91 +61,27 @@ namespace Glow.PageControls
         {
         }
 
-
-        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        private async void ColorPicker_OnColorChanged(object sender, Controls.OnColorChangedArgs e)
         {
-            m_timer = new DispatcherTimer();
-            m_timer.Interval = new TimeSpan(0, 0, 0, 0, 50);
-            m_timer.Tick += Timer_Tick;
-            m_timer.Start();
-        }
-
-        // Gather the values on the timer tick
-        private async void Timer_Tick(object sender, object e)
-        {
-            // Don't update unless we have something
-            if (!m_hasUpdates)
-            {
-                return;
-            }
-            m_hasUpdates = false;
-
             ManualColorSettings newSettings = new ManualColorSettings();
-            newSettings.CurrentLedState = new List<SerlizableLed>();
-            newSettings.CurrentLedState.Add(new SerlizableLed(GetValue(u_led1r), GetValue(u_led1g), GetValue(u_led1b), GetValue(u_led1i)));
-            newSettings.CurrentLedState.Add(new SerlizableLed(GetValue(u_led2r), GetValue(u_led2g), GetValue(u_led2b), GetValue(u_led2i)));
-            newSettings.CurrentLedState.Add(new SerlizableLed(GetValue(u_led3r), GetValue(u_led3g), GetValue(u_led3b), GetValue(u_led3i)));
-            newSettings.CurrentLedState.Add(new SerlizableLed(GetValue(u_led4r), GetValue(u_led4g), GetValue(u_led4b), GetValue(u_led4i)));
-            newSettings.CurrentLedState.Add(new SerlizableLed(GetValue(u_led5r), GetValue(u_led5g), GetValue(u_led5b), GetValue(u_led5i)));
+            newSettings.CurrentLedStateList = new List<List<SerlizableLed>>();
+            List<SerlizableLed> localList = new List<SerlizableLed>();
+            SerlizableLed led = new SerlizableLed(e.Red / 255.0, e.Green / 255.0, e.Blue / 255.0, 1.0, 0);
+            localList.Add(led);
+            localList.Add(led);
+            localList.Add(led);
+            localList.Add(led);
+            localList.Add(led);
 
-            // update the UI
-            byte r = (byte)(GetValue(u_led1r) * GetValue(u_led1i) * 255);
-            byte g = (byte)(GetValue(u_led1g) * GetValue(u_led1i) * 255);
-            byte b = (byte)(GetValue(u_led1b) * GetValue(u_led1i) * 255);
-            u_led1.Fill = new SolidColorBrush(Color.FromArgb(255, r, g, b));
-
-            r = (byte)(GetValue(u_led2r) * GetValue(u_led2i) * 255);
-            g = (byte)(GetValue(u_led2g) * GetValue(u_led2i) * 255);
-            b = (byte)(GetValue(u_led2b) * GetValue(u_led2i) * 255);
-            u_led2.Fill = new SolidColorBrush(Color.FromArgb(255, r, g, b));
-
-            r = (byte)(GetValue(u_led3r) * GetValue(u_led3i) * 255);
-            g = (byte)(GetValue(u_led3g) * GetValue(u_led3i) * 255);
-            b = (byte)(GetValue(u_led3b) * GetValue(u_led3i) * 255);
-            u_led3.Fill = new SolidColorBrush(Color.FromArgb(255, r, g, b));
-
-            r = (byte)(GetValue(u_led4r) * GetValue(u_led4i) * 255);
-            g = (byte)(GetValue(u_led4g) * GetValue(u_led4i) * 255);
-            b = (byte)(GetValue(u_led4b) * GetValue(u_led4i) * 255);
-            u_led4.Fill = new SolidColorBrush(Color.FromArgb(255, r, g, b));
-
-            r = (byte)(GetValue(u_led5r) * GetValue(u_led5i) * 255);
-            g = (byte)(GetValue(u_led5g) * GetValue(u_led5i) * 255);
-            b = (byte)(GetValue(u_led5b) * GetValue(u_led5i) * 255);
-            u_led5.Fill = new SolidColorBrush(Color.FromArgb(255, r, g, b));
+            newSettings.CurrentLedStateList.Add(localList);
 
             // Send the settings
             await SendNewSettings(newSettings);
-            m_lastSettings = newSettings;
         }
 
-        private double GetValue(Slider slider)
-        {
-            return slider.Value / 100;
-        }
-
-        private async Task SendNewSettings(ManualColorSettings settings)
-        {
-            Command cmd = new Command();
-            cmd.Program = GlowPrograms.ManualColors;
-            cmd.MessageId = Command.COMMAND_RECIEVE_SETTINGS;
-            cmd.Message = Newtonsoft.Json.JsonConvert.SerializeObject(settings);
-
-            try
-            {
-                await App.GlowBack.ConnectionManager.SendCommand(cmd);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
-        private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            m_hasUpdates = true;
-        }
-
+        /// <summary>
+        /// Does what is says.
+        /// </summary>
         private async void GetAndSetProgramState()
         {
             m_programEnabled = m_controller.GetProgramState(GlowCommon.GlowPrograms.ManualColors);
@@ -156,7 +91,12 @@ namespace Glow.PageControls
             });
         }
 
-        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Fired when a user toggles the manual color
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ManualColor_Toggled(object sender, RoutedEventArgs e)
         {
             if (m_programEnabled == ui_manualColorEnable.IsOn)
             {
@@ -166,5 +106,123 @@ namespace Glow.PageControls
             m_programEnabled = ui_manualColorEnable.IsOn;
             m_controller.ToggleProgram(GlowCommon.GlowPrograms.ManualColors, m_programEnabled);
         }
+
+        /// <summary>
+        /// Sends the new settings to the pie
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <returns></returns>
+        private async Task SendNewSettings(ManualColorSettings settings)
+        {
+            Command cmd = new Command();
+            cmd.Program = GlowPrograms.ManualColors;
+            cmd.MessageId = Command.COMMAND_RECIEVE_SETTINGS;
+            cmd.Message = Newtonsoft.Json.JsonConvert.SerializeObject(settings);
+            try
+            {
+                await App.GlowBack.ConnectionManager.SendCommand(cmd);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Failed to send update manual color settings " + e.Message);
+            }
+        }
+
+        #region Live Mode
+        ManualColorSettings m_liveColorSettings = new ManualColorSettings();
+        bool isSending = false;
+        byte[,] m_liveColor = new byte[5,3];
+
+        private void ColorPicker_OnColorChanged_0(object sender, Controls.OnColorChangedArgs e)
+        {
+            m_liveColor[0, 0] = e.Red;
+            m_liveColor[0, 1] = e.Green;
+            m_liveColor[0, 2] = e.Blue;
+            FireLiveTouchChagned();
+        }
+
+        private void ColorPicker_OnColorChanged_1(object sender, Controls.OnColorChangedArgs e)
+        {
+            m_liveColor[1, 0] = e.Red;
+            m_liveColor[1, 1] = e.Green;
+            m_liveColor[1, 2] = e.Blue;
+            FireLiveTouchChagned();
+        }
+
+        private void ColorPicker_OnColorChanged_2(object sender, Controls.OnColorChangedArgs e)
+        {
+            m_liveColor[2, 0] = e.Red;
+            m_liveColor[2, 1] = e.Green;
+            m_liveColor[2, 2] = e.Blue;
+            FireLiveTouchChagned();
+        }
+
+        private void ColorPicker_OnColorChanged_3(object sender, Controls.OnColorChangedArgs e)
+        {
+            m_liveColor[3, 0] = e.Red;
+            m_liveColor[3, 1] = e.Green;
+            m_liveColor[3, 2] = e.Blue;
+            FireLiveTouchChagned();
+        }
+
+        private void ColorPicker_OnColorChanged_4(object sender, Controls.OnColorChangedArgs e)
+        {
+            m_liveColor[4, 0] = e.Red;
+            m_liveColor[4, 1] = e.Green;
+            m_liveColor[4, 2] = e.Blue;
+            FireLiveTouchChagned();
+        }
+
+        private void FireLiveTouchChagned()
+        {
+            // Leave if we are already working.
+            lock(m_liveColorSettings)
+            {
+                if(isSending)
+                {
+                    return;
+                }
+                isSending = true;
+            }
+
+            MakeLiveSettingsUpdate();
+        }
+
+        private async void MakeLiveSettingsUpdate()
+        {
+            // Make the settings and the list.
+            if(m_liveColorSettings.CurrentLedStateList == null)
+            {
+                m_liveColorSettings.CurrentLedStateList = new List<List<SerlizableLed>>();
+            }
+            if(m_liveColorSettings.CurrentLedStateList.Count != 1)
+            {
+                m_liveColorSettings.CurrentLedStateList.Count();
+                m_liveColorSettings.CurrentLedStateList.Add(new List<SerlizableLed>());
+            }
+
+            m_liveColorSettings.CurrentLedStateList[0].Clear();
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[0, 0] / 255.0, m_liveColor[0, 1] / 255.0, m_liveColor[0, 2] / 255.0, 1.0, 0));
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[1, 0] / 255.0, m_liveColor[1, 1] / 255.0, m_liveColor[1, 2] / 255.0, 1.0, 0));
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[2, 0] / 255.0, m_liveColor[2, 1] / 255.0, m_liveColor[2, 2] / 255.0, 1.0, 0));
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[3, 0] / 255.0, m_liveColor[3, 1] / 255.0, m_liveColor[3, 2] / 255.0, 1.0, 0));
+            m_liveColorSettings.CurrentLedStateList[0].Add(new SerlizableLed(m_liveColor[4, 0] / 255.0, m_liveColor[4, 1] / 255.0, m_liveColor[4, 2] / 255.0, 1.0, 0));
+
+            // Send the settings
+            await SendNewSettings(m_liveColorSettings);
+            isSending = false;
+        }
+
+        private void LiveMode_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ui_liveModeHolder.Visibility = Visibility.Visible;
+        }
+
+        private void Exit_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ui_liveModeHolder.Visibility = Visibility.Collapsed;
+        }
+
+        #endregion
     }
 }

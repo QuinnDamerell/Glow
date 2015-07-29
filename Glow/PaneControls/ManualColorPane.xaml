@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Glow.PageControls"
+    xmlns:picker="using:Glow.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:custom="clr-namespace:Glow.PaneControls"
@@ -12,109 +13,57 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled">
-            <StackPanel>
-                <Grid Background="{ThemeResource AppBarItemPointerOverBackgroundThemeBrush}" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <ToggleSwitch x:Name="ui_manualColorEnable" Grid.Column="2" Toggled="ToggleSwitch_Toggled"/>
-                </Grid>
-                <Grid Padding="8">
+            <StackPanel Margin="8">
+                <TextBlock Style="{ThemeResource HeaderTextBlockStyle}" Text="Manual Color"/>
+                <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Let your imagination run wild!"/>
+                <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="With the manual color extension you're in control! Play with the objects in real time, set patterns of color to rotate through, and more!" Margin="0,12"/>
+                <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Enable Manual Color"/>
+                <ToggleSwitch x:Name="ui_manualColorEnable" Toggled="ManualColor_Toggled" />
+                
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*" MaxWidth="400"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led1"/>
-                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led1r" ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led1g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led1b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led1i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
+                    
+                    <Button HorizontalAlignment="Stretch" Content="Live Mode" Tapped="LiveMode_Tapped"/>
                 </Grid>
-                <Grid Background="#22000000" Padding="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*" MaxWidth="400"/>
-                    </Grid.ColumnDefinitions>
 
-                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led2"/>
-                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led2r" ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led2g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led2b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led2i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
-                </Grid>
-                <Grid Padding="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*" MaxWidth="400"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led3"/>
-                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led3r" ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led3g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led3b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led3i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
-                </Grid>
-                <Grid Background="#22000000" Padding="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*" MaxWidth="400"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led4"/>
-                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led4r" ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led4g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led4b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led4i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
-                </Grid>
-                <Grid Padding="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*" MaxWidth="400"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Ellipse Width="100" Height="100" Fill="Black" Grid.RowSpan="4" x:Name="u_led5"/>
-                    <Slider Grid.Column="1" Padding="8,2" x:Name="u_led5r" ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="1" x:Name="u_led5g" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="2" x:Name="u_led5b" Padding="8,2"  ValueChanged="Slider_ValueChanged"/>
-                    <Slider Grid.Column="1" Grid.Row="3" x:Name="u_led5i" Padding="8,2" Value="100" ValueChanged="Slider_ValueChanged"/>
-                </Grid>
+                <!--<picker:ColorPicker OnColorChanged="ColorPicker_OnColorChanged" Source="ms-appx:///Assets/Pickers/RBGColors.png" />-->
+                
             </StackPanel>
         </ScrollViewer>
+        
+        <Grid x:Name="ui_liveModeHolder" Background="Black" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <ScrollViewer HorizontalAlignment="Center" VerticalScrollMode="Disabled" HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                <StackPanel Grid.Row="1" Margin="8" Orientation="Horizontal">
+                    <Button Content="Colors" RequestedTheme="Dark" Margin="8,12,8,12"/>
+                    <Button Content="Camera" RequestedTheme="Dark" Margin="8,12,8,12"/>
+                    <Button Content="Band" RequestedTheme="Dark" Margin="8,12,8,12"/>
+                    <Button Content="Exit" RequestedTheme="Dark" Margin="8,12,8,12" Tapped="Exit_Tapped"/>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
+                <picker:ColorPicker Grid.Column="0" OnColorChanged="ColorPicker_OnColorChanged_0" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6" />
+                <picker:ColorPicker Grid.Column="1" OnColorChanged="ColorPicker_OnColorChanged_1" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6"  />
+                <picker:ColorPicker Grid.Column="2" OnColorChanged="ColorPicker_OnColorChanged_2" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6" />
+                <picker:ColorPicker Grid.Column="3" OnColorChanged="ColorPicker_OnColorChanged_3" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6" />
+                <picker:ColorPicker Grid.Column="4" OnColorChanged="ColorPicker_OnColorChanged_4" Source="ms-appx:///Assets/Pickers/RBGColors.png" Margin="6" />
+            </Grid>            
+        </Grid>
     </Grid>
 </UserControl>
