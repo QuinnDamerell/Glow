@@ -52,7 +52,7 @@
                 </StackPanel>
             </ScrollViewer>
             
-            <Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+            <Grid Visibility="Visible" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -66,7 +66,11 @@
                 <picker:ColorPicker Grid.Column="2" OnColorChanged="ColorPicker_OnColorChanged_2" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
                 <picker:ColorPicker Grid.Column="3" OnColorChanged="ColorPicker_OnColorChanged_3" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
                 <picker:ColorPicker Grid.Column="4" OnColorChanged="ColorPicker_OnColorChanged_4" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
-            </Grid>      
+            </Grid>    
+            
+            <Grid Visibility="Collapsed">
+                <CaptureElement x:Name="ui_cameraCapture"/>
+            </Grid>
             
             <Grid Grid.Row="2" HorizontalAlignment="Stretch" Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>

@@ -6,14 +6,55 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
+    d:DesignHeight="800"
     d:DesignWidth="400">
 
     <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="8">
         <TextBlock Style="{ThemeResource HeaderTextBlockStyle}" Text="Random Color"/>
-        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="This will be text"/>
-        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="The clock extension will turn your glow objects into brightly colored center pieces that can be used to approximate the time. The current time will be shown on the objects in descending order, month, day of the week, hours, minutes, seconds." Margin="0,12"/>
+        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Math.Random() "/>
+        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="This fun program allows you to make your glow object random change colors! You can specify the min and max rand for both the duration of the color change and the time between color changes. If you want instant color changes at random times, set the duration to 0 and the time between to range. " Margin="0,12"/>
         <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Enable Random Color"/>
         <ToggleSwitch x:Name="ui_randomColorToggle" Toggled="RandomColorEnabled_Toggled"/>
+        
+        <TextBlock Text="Minimum Time Between Color Changes" Margin="0,12,0,0"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Slider x:Name="ui_minBetweenChange" ValueChanged="MinTimeBetweenChange_ValueChanged" VerticalAlignment="Center"/>
+            <TextBlock x:Name="ui_minBetweenChangeText" Grid.Column="1" Text="300ms" VerticalAlignment="Center" Margin="8,-6,0,0"/>
+        </Grid>
+
+        <TextBlock Text="Maximum Time Between Color Changes" Margin="0,12,0,0"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Slider x:Name="ui_maxBetweenChange" ValueChanged="MaxBetweenChange_ValueChanged" VerticalAlignment="Center"/>
+            <TextBlock x:Name="ui_maxBetweenChangeText" Grid.Column="1" Text="300ms" VerticalAlignment="Center" Margin="8,-7,0,0"/>
+        </Grid>
+
+        <TextBlock Text="Minimum Time For A Color Change" Margin="0,12,0,0"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Slider x:Name="ui_minForColorChange" ValueChanged="MinForColorChange_ValueChanged" VerticalAlignment="Center"/>
+            <TextBlock x:Name="ui_minForColorChangeText" Grid.Column="1" Text="300ms" VerticalAlignment="Center" Margin="8,-6,0,0"/>
+        </Grid>
+
+        <TextBlock Text="Maximum Time For A Color Change" Margin="0,12,0,0"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Slider x:Name="ui_maxForColorChange" ValueChanged="MaxForColorChange_ValueChanged" VerticalAlignment="Center"/>
+            <TextBlock x:Name="ui_maxForColorChangeText" Grid.Column="1" Text="300ms" VerticalAlignment="Center" Margin="8,-7,0,0"/>
+        </Grid>
+
     </StackPanel>
 </UserControl>

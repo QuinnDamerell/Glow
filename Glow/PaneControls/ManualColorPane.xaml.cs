@@ -11,6 +11,10 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Imaging;
+using Windows.Media;
+using Windows.Media.Capture;
+using Windows.Media.MediaProperties;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -133,6 +137,8 @@ namespace Glow.PageControls
         bool isSending = false;
         byte[,] m_liveColor = new byte[5,3];
         int m_liveColorUpdateSpeedMs = 500;
+        MediaCapture m_mediaCapture;
+        DispatcherTimer m_videoTimer;
 
         private void ColorPicker_OnColorChanged_0(object sender, Controls.OnColorChangedArgs e)
         {
@@ -217,6 +223,7 @@ namespace Glow.PageControls
         private void LiveMode_Tapped(object sender, TappedRoutedEventArgs e)
         {
             FadeLiveMode(true);
+           // StartCameraPreview();
         }
 
         private void Exit_Tapped(object sender, TappedRoutedEventArgs e)
@@ -247,6 +254,48 @@ namespace Glow.PageControls
             if (ui_liveColorChangeSpeedText != null)
             {
                 ui_liveColorChangeSpeedText.Text = m_liveColorUpdateSpeedMs > 1000 ? $"{m_liveColorUpdateSpeedMs / 1000}s" : $"{m_liveColorUpdateSpeedMs}ms";
+            }
+        }
+
+        private async void StartCameraPreview()
+        {
+            // Setup the video preview
+            try
+            {
+                m_mediaCapture = new MediaCapture();
+                await m_mediaCapture.InitializeAsync();
+                ui_cameraCapture.Source = m_mediaCapture;
+                await m_mediaCapture.StartPreviewAsync();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+
+            m_videoTimer = new DispatcherTimer();
+            m_videoTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            m_videoTimer.Tick += M_videoTimer_Tick;
+            m_videoTimer.Start();
+        }
+
+        private async void M_videoTimer_Tick(object sender, object e)
+        {
+            if (m_mediaCapture == null)
+            {
+                m_videoTimer.Stop();
+                m_videoTimer = null;
+                return;
+            }
+
+            VideoFrame frame = await m_mediaCapture.GetPreviewFrameAsync();
+            LowLagPhotoCapture cap =  await m_mediaCapture.PrepareLowLagPhotoCaptureAsync(ImageEncodingProperties.CreateBmp());
+            CapturedPhoto photo = await cap.CaptureAsync();
+           
+            using (BitmapBuffer buffer = frame.SoftwareBitmap.LockBuffer(Windows.Graphics.Imaging.BitmapBufferAccessMode.Read))
+            {
+                IMemoryBufferReference reft = buffer.CreateReference();
+              
             }
         }
 
