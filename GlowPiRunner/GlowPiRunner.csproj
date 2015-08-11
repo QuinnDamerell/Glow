@@ -132,7 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GlowPi\GlowPi.csproj">
-      <Project>{89eb902b-6a2a-4cc2-8464-d91f38048105}</Project>
+      <Project>{0f5333ca-be9f-41e7-ba31-5f34eb4f4e05}</Project>
       <Name>GlowPi</Name>
     </ProjectReference>
   </ItemGroup>

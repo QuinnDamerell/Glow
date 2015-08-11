@@ -23,7 +23,7 @@ namespace GlowPiRunner
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        MainTask m_task;
+        StartupTask m_task;
 
         public MainPage()
         {
@@ -34,7 +34,7 @@ namespace GlowPiRunner
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             // This app only functions as a wrapper to run the background task more easily.
-            m_task = new MainTask();
+            m_task = new StartupTask();
             m_task.Run(null);
         }
     }
