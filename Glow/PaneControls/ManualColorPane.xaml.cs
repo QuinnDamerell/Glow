@@ -1,7 +1,6 @@
 ﻿using Glow.Interfaces;
 using GlowCommon;
 using GlowCommon.DataObjects;
-using Microsoft.Band;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
