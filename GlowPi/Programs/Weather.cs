@@ -220,13 +220,13 @@ namespace GlowPi.Programs
             // Fade between blue and red.
             double blue = 1 - temp;
             double red = temp;
-            led.Animate(red, 0, blue, 1, new TimeSpan(1), AnimationType.Linear);
+            led.Animate(red, 0, blue, 1, TimeSpan.FromSeconds(1), AnimationType.Linear);
         }
 
         private void SetWindValue(AnimatedLed led, double wind)
         {
             // Fade from blue to white.
-            led.Animate(wind, wind, 1.0, 1, new TimeSpan(1), AnimationType.Linear);
+            led.Animate(wind, wind, 1.0, 1, TimeSpan.FromSeconds(1), AnimationType.Linear);
         }
 
         class Temp

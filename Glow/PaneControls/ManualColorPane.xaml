@@ -45,14 +45,14 @@
             
             <ScrollViewer HorizontalAlignment="Center" VerticalScrollMode="Disabled" HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                 <StackPanel Grid.Row="1" Margin="8" Orientation="Horizontal">
-                    <Button Content="Colors" RequestedTheme="Dark" Margin="8,12,8,12"/>
-                    <Button Content="Camera" RequestedTheme="Dark" Margin="8,12,8,12"/>
+                    <Button Content="Colors" RequestedTheme="Dark" Margin="8,12,8,12" Tapped="Button_Tapped"/>
+                    <Button Content="Camera" RequestedTheme="Dark" Margin="8,12,8,12" Tapped="Button_Tapped_1"/>
                     <Button Content="Band" RequestedTheme="Dark" Margin="8,12,8,12"/>
                     <Button Content="Exit" RequestedTheme="Dark" Margin="8,12,8,12" Tapped="Exit_Tapped"/>
                 </StackPanel>
             </ScrollViewer>
             
-            <Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+            <Grid x:Name="ui_livecolors" Visibility="Visible" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -66,7 +66,11 @@
                 <picker:ColorPicker Grid.Column="2" OnColorChanged="ColorPicker_OnColorChanged_2" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
                 <picker:ColorPicker Grid.Column="3" OnColorChanged="ColorPicker_OnColorChanged_3" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
                 <picker:ColorPicker Grid.Column="4" OnColorChanged="ColorPicker_OnColorChanged_4" Source="ms-appx:///Assets/Pickers/FullSpec.jpg" Margin="6" />
-            </Grid>      
+            </Grid>
+
+            <Grid x:Name="ui_liveVideo" Visibility="Collapsed" Grid.Row="1">
+                <CaptureElement x:Name="ui_cameraCapture"/>
+            </Grid>
             
             <Grid Grid.Row="2" HorizontalAlignment="Stretch" Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>

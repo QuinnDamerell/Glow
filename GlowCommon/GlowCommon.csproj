@@ -121,6 +121,7 @@
     <Compile Include="DataObjects\Commands\ManualColorCommands.cs" />
     <Compile Include="DataObjects\GlowControlSettings.cs" />
     <Compile Include="DataObjects\ManualColorSettings.cs" />
+    <Compile Include="DataObjects\RandomColorSettings.cs" />
     <Compile Include="DataObjects\WeatherSettings.cs" />
     <Compile Include="DiscoveryServer.cs" />
     <Compile Include="GlowBackend.cs" />

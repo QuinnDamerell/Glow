@@ -8,8 +8,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Imaging;
+using Windows.Media;
+using Windows.Media.Capture;
+using Windows.Media.MediaProperties;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -18,6 +23,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -132,6 +138,8 @@ namespace Glow.PageControls
         bool isSending = false;
         byte[,] m_liveColor = new byte[5,3];
         int m_liveColorUpdateSpeedMs = 500;
+        MediaCapture m_mediaCapture;
+        DispatcherTimer m_videoTimer;
 
         private void ColorPicker_OnColorChanged_0(object sender, Controls.OnColorChangedArgs e)
         {
@@ -216,6 +224,7 @@ namespace Glow.PageControls
         private void LiveMode_Tapped(object sender, TappedRoutedEventArgs e)
         {
             FadeLiveMode(true);
+ 
         }
 
         private void Exit_Tapped(object sender, TappedRoutedEventArgs e)
@@ -249,8 +258,103 @@ namespace Glow.PageControls
             }
         }
 
+        private async void StartCameraPreview()
+        {
+            // Setup the video preview
+            try
+            {
+                DeviceInformationCollection devices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
+
+                
+
+                m_mediaCapture = new MediaCapture();
+                await m_mediaCapture.InitializeAsync(new MediaCaptureInitializationSettings
+                {
+                    VideoDeviceId = devices[devices.Count() - 1].Id
+                });
+                ui_cameraCapture.Source = m_mediaCapture;
+                await m_mediaCapture.StartPreviewAsync();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+
+            m_videoTimer = new DispatcherTimer();
+            m_videoTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            m_videoTimer.Tick += M_videoTimer_Tick;
+            m_videoTimer.Start();
+        }
+
+        private async void KillCamera()
+        {
+            try
+            {
+                m_videoTimer.Stop();
+                m_videoTimer = null;
+                await m_mediaCapture.StopPreviewAsync();
+            } catch (Exception)
+            { }
+        }
+
+        bool isrunning = false;
+        private async void M_videoTimer_Tick(object sender, object e)
+        {
+            if (m_mediaCapture == null)
+            {
+                m_videoTimer.Stop();
+                m_videoTimer = null;
+                return;
+            }
+
+            lock(m_mediaCapture)
+            {
+                if(isrunning)
+                {
+                    return;
+                }
+                isrunning = true;
+            }
+
+            LowLagPhotoCapture cap =  await m_mediaCapture.PrepareLowLagPhotoCaptureAsync(ImageEncodingProperties.CreateBmp());
+            CapturedPhoto photo = await cap.CaptureAsync();
+              
+
+            WriteableBitmap bitmap = new WriteableBitmap((int)photo.Frame.Width, (int)photo.Frame.Height);
+            await bitmap.SetSourceAsync(photo.Frame.AsStreamForRead().AsRandomAccessStream());
+            bitmap.Invalidate();
+            byte[] imageArray = bitmap.PixelBuffer.ToArray();
+
+            int starting = (bitmap.PixelHeight /2) * bitmap.PixelWidth * 4 + (bitmap.PixelWidth * 2);
+            byte blue = imageArray[starting];
+            byte green = imageArray[starting+1];
+            byte red = imageArray[starting+2];
+
+            m_liveColor[0, 0] = red;
+            m_liveColor[0, 1] = green;
+            m_liveColor[0, 2] = blue;
+
+            MakeLiveSettingsUpdate();
+
+            isrunning = false;
+        }
+
+
         #endregion
 
+        private void Button_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ui_liveVideo.Visibility = Visibility.Collapsed;
+            ui_manualColorEnable.Visibility = Visibility.Visible;
+            KillCamera();
+        }
 
+        private void Button_Tapped_1(object sender, TappedRoutedEventArgs e)
+        {
+            ui_liveVideo.Visibility = Visibility.Visible;
+            ui_manualColorEnable.Visibility = Visibility.Collapsed;
+            StartCameraPreview();
+        }
     }
 }
