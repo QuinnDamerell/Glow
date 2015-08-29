@@ -37,7 +37,7 @@
                     </Storyboard>
                 </Button.Resources>
             </Button>
-            <Button x:Name="ui_manualButtom" Grid.Row="3" Content="manual" HorizontalAlignment="Stretch" Tapped="Manual_Tapped">
+            <Button x:Name="ui_manualButtom" Grid.Row="3" Content="what's glow?" HorizontalAlignment="Stretch" Tapped="Manual_Tapped">
                 <Button.Resources>
                     <Storyboard x:Name="ui_storyManualButtom">
                         <DoubleAnimation x:Name="ui_animManualButtom" Storyboard.TargetName="ui_manualButtom" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1"/>

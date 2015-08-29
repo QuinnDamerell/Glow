@@ -177,9 +177,8 @@ namespace Glow
             {
                 return;
             }
-            //MessageDialog message = new MessageDialog("Not done yet.", "Oops");
-            //message.ShowAsync();
-            NavigateAwaySuccess(); //# todo remove
+
+            Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/QuinnDamerell/Glow", UriKind.Absolute));
         }
 
         /// <summary>
