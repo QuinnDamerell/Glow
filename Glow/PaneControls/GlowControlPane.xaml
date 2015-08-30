@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
+    d:DesignHeight="600"
     d:DesignWidth="400">
 
     <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="8">
@@ -14,6 +14,18 @@
         <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Welcome to Glow"/>
         <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="Hmmm, we really need some text here." Margin="0,12"/>
         <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Master Brightness"/>
-        <Slider x:Name="ui_masterSlider" ValueChanged="Slider_ValueChanged" />
+        <Slider x:Name="ui_masterSlider" ValueChanged="MasterSlider_ValueChanged" />
+
+        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Sleepy Time"/>
+        <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="Sleepy time allows you to dim or turn off Glow during a time span. Ideal for times when you want to catch some zzzs."  Margin="0,12"/>
+
+        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Brightness"/>
+        <Slider x:Name="ui_sleepyTimeBrightness" ValueChanged="SleepyTimeBrightness_ValueChanged" />
+
+        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Start Time" Margin="0,8,12,12"/>
+        <TimePicker x:Name="ui_sleepyOnTime" TimeChanged="SleepyOnTime_TimeChanged" />
+
+        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="End Time" Margin="0,12"/>
+        <TimePicker x:Name="ui_sleepyOffTime" TimeChanged="SleepyOffTime_TimeChanged"/>
     </StackPanel>
 </UserControl>

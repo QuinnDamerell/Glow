@@ -27,11 +27,11 @@ namespace GlowCommon.DataObjects
         /// <summary>
         /// Indicates if we should read settings from the store.
         /// </summary>
-        private bool m_readSettings = false;
+        public bool ReadSettings = false;
 
         public GlowControlSettings(bool readSettings = false)
         {
-            m_readSettings = readSettings;
+            ReadSettings = readSettings;
         }
 
         //
@@ -53,7 +53,7 @@ namespace GlowCommon.DataObjects
         {
             get
             {
-                if (m_readSettings)
+                if (ReadSettings)
                 {
                     return SettingsHelpers<Dictionary<GlowPrograms, ProgramState>>.GetStringSeralizedValueOrDefault(ref m_programStateList, null, new Dictionary<GlowPrograms, ProgramState>(), "GlowControl.ProgramStateList");
                 }
@@ -77,7 +77,7 @@ namespace GlowCommon.DataObjects
         {
             get
             {
-                if (m_readSettings)
+                if (ReadSettings)
                 {
                     // Default to 30 seconds
                     return SettingsHelpers<uint>.GetValueOrDefault(ref m_programCycleTimeMs, 0, 30 * 1000, "GlowControl.ProgramCycleTimeMs");
@@ -103,13 +103,13 @@ namespace GlowCommon.DataObjects
         {
             get
             {
-                if (m_readSettings)
+                if (ReadSettings)
                 {
                     return SettingsHelpers<double>.GetValueOrDefault(ref m_masterIntensity, -1, 1, "GlowControl.MasterIntensity");
                 }
                 else
                 {
-                    return m_programCycleTimeMs;
+                    return m_masterIntensity;
                 }
             }
             set
@@ -120,5 +120,76 @@ namespace GlowCommon.DataObjects
         }
         private double m_masterIntensity = -1;
 
+        /// <summary>
+        /// Intensity while in sleepy time
+        /// </summary>
+        public double SleepyTimeIntensity
+        {
+            get
+            {
+                if (ReadSettings)
+                {
+                    return SettingsHelpers<double>.GetValueOrDefault(ref m_sleepyTimeIntensity, -1, 1, "GlowControl.SleepyTimeIntensity");
+                }
+                else
+                {
+                    return m_sleepyTimeIntensity;
+                }
+            }
+            set
+            {
+                m_sleepyTimeIntensity = value;
+                SettingsHelpers<double>.SetNewValues(m_sleepyTimeIntensity, "GlowControl.SleepyTimeIntensity");
+            }
+        }
+        private double m_sleepyTimeIntensity = -1;
+
+        /// <summary>
+        /// Sleepy time start
+        /// </summary>
+        public TimeSpan SleepyTimeStart
+        {
+            get
+            {
+                if (ReadSettings)
+                {
+                    return SettingsHelpers<TimeSpan>.GetStringSeralizedValueOrDefault(ref m_sleepyTimeStart, new TimeSpan(12, 0, 0), new TimeSpan(12, 0, 0), "GlowControl.SleepyTimeStart");
+                }
+                else
+                {
+                    return m_sleepyTimeStart;
+                }
+            }
+            set
+            {
+                m_sleepyTimeStart = value;
+                SettingsHelpers<TimeSpan>.SetStringSeralizedNewValues(m_sleepyTimeStart, "GlowControl.SleepyTimeStart");
+            }
+        }
+        private TimeSpan m_sleepyTimeStart = new TimeSpan(12, 0, 0);
+
+        /// <summary>
+        /// Sleepy time end
+        /// </summary>
+        public TimeSpan SleepyTimeEnd
+        {
+            get
+            {
+                if (ReadSettings)
+                {
+                    return SettingsHelpers<TimeSpan>.GetStringSeralizedValueOrDefault(ref m_sleepyTimeEnd, new TimeSpan(12, 0, 0), new TimeSpan(12, 0, 0), "GlowControl.SleepyTimeEnd");
+                }
+                else
+                {
+                    return m_sleepyTimeEnd;
+                }
+            }
+            set
+            {
+                m_sleepyTimeEnd = value;
+                SettingsHelpers<TimeSpan>.SetStringSeralizedNewValues(m_sleepyTimeEnd, "GlowControl.SleepyTimeEnd");
+            }
+        }
+        private TimeSpan m_sleepyTimeEnd = new TimeSpan(12, 0, 0);
     }
 }

@@ -61,6 +61,29 @@ namespace GlowPi.Programs
 
             if(m_nextCycleTimeMs < 0)
             {
+                // Set the intensity
+                double desiredIntensity = -1;
+                TimeSpan now = DateTime.Now.TimeOfDay;
+                // #todo, finish this logic
+                if(now.CompareTo(m_settings.SleepyTimeStart) > 0)
+                {
+                    desiredIntensity = m_settings.SleepyTimeIntensity;
+                }
+                else
+                {
+                    desiredIntensity = m_settings.MasterIntensity;
+                }
+
+                double currentIntensity = m_controller.GetMasterIntensity();
+                if(desiredIntensity != currentIntensity)
+                {
+                    // #todo account for tick time here.
+                    double diff = currentIntensity - desiredIntensity;
+                    diff = Math.Max(-.05, Math.Min(.05, diff));
+                    currentIntensity -= diff;
+                    m_controller.SetMasterIntensity(currentIntensity);
+                }
+
                 GlowPrograms runningProgram = GlowPrograms.None;
                 GlowPrograms nextProgram = GlowPrograms.None;
                 foreach(KeyValuePair<GlowPrograms, GlowControlSettings.ProgramState> programState in m_settings.ProgramStateList)

@@ -45,5 +45,15 @@ namespace GlowPi
 
             return m_leds[ledNumber];
         }
+
+        public double GetMasterIntensity()
+        {
+            return m_controller.MasterIntensity;
+        }
+
+        public void SetMasterIntensity(double intensity)
+        {
+            m_controller.MasterIntensity = intensity;
+        }
     }
 }

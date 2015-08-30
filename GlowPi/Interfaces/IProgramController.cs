@@ -18,5 +18,9 @@ namespace GlowPi.Interfaces
         void ToggleProgram(GlowPrograms program, bool enable);
 
         bool IsProgramEnabled(GlowPrograms program);
+
+        void SetMasterIntensity(double intensity);
+
+        double GetMasterIntensity();
     }
 }

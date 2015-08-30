@@ -115,6 +115,16 @@ namespace GlowPi
             return m_ledController.GetLed(ledNumber);
         }
 
+        public double GetMasterIntensity()
+        {
+            return m_ledController.GetMasterIntensity();
+        }
+        
+        public void SetMasterIntensity(double intensity)
+        {
+            m_ledController.SetMasterIntensity(intensity);
+        }
+
         // Called from the programs to change the work callback rate
         public void SetWorkRate(uint workRateMs)
         {

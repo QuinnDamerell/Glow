@@ -137,6 +137,9 @@ namespace Glow.PaneControls
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 ui_masterSlider.Value = m_settings.MasterIntensity * 100;
+                ui_sleepyTimeBrightness.Value = m_settings.SleepyTimeIntensity * 100;
+                ui_sleepyOnTime.Time = m_settings.SleepyTimeStart;
+                ui_sleepyOffTime.Time = m_settings.SleepyTimeEnd;
             });
         }
 
@@ -145,10 +148,36 @@ namespace Glow.PaneControls
             // Ignore this.
         }
 
-        private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        private void MasterSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
+            m_settings.MasterIntensity = ui_masterSlider.Value / 100;
+
             // Send an update to the settings
             SendUpdatedSettings(); 
+        }
+
+        private void SleepyTimeBrightness_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            m_settings.SleepyTimeIntensity = ui_sleepyTimeBrightness.Value / 100;
+
+            // Send an update to the settings
+            SendUpdatedSettings();
+        }
+
+        private void SleepyOnTime_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+        {
+            m_settings.SleepyTimeStart = ui_sleepyOnTime.Time;
+
+            // Send an update to the settings
+            SendUpdatedSettings();
+        }
+
+        private void SleepyOffTime_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+        {
+            m_settings.SleepyTimeEnd = ui_sleepyOffTime.Time;
+
+            // Send an update to the settings
+            SendUpdatedSettings();
         }
     }
 }
