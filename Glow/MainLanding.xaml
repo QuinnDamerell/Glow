@@ -35,7 +35,7 @@
                     <!-- Glow  -->
                     <Button x:Name="ui_glowButton" VerticalAlignment="Center" HorizontalAlignment="Center" Background="#00000000" Click="GlowButton_Click" Padding="12">
                         <Button.Content>
-                            <Image Source="Assets/logo.png"  />
+                            <Image Source="Assets/Storelogo.png"  />
                         </Button.Content>
                     </Button>
                     

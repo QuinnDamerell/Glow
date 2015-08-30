@@ -46,14 +46,19 @@ namespace GlowPi
             return m_leds[ledNumber];
         }
 
-        public double GetMasterIntensity()
+        public void AnimateMasterIntensity(double intensity, TimeSpan animationTime)
         {
-            return m_controller.MasterIntensity;
+            m_controller.AnimateMasterIntensity(intensity, animationTime);
         }
 
-        public void SetMasterIntensity(double intensity)
+        public double GetMasterIntensity()
         {
-            m_controller.MasterIntensity = intensity;
+            return m_controller.GetMasterIntensity();
+        }
+
+        public bool IsMasterIntensityAnimating()
+        {
+            return m_controller.IsMasterIntensityAnimating();
         }
     }
 }

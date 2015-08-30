@@ -16,6 +16,7 @@ namespace GlowPi.Programs
 
         // Cycle vars
         int m_nextCycleTimeMs;
+        bool m_userActionCycle = false;
 
         public void InitProgram(IProgramController controller)
         {
@@ -64,8 +65,10 @@ namespace GlowPi.Programs
                 // Set the intensity
                 double desiredIntensity = -1;
                 TimeSpan now = DateTime.Now.TimeOfDay;
-                // #todo, finish this logic
-                if(now.CompareTo(m_settings.SleepyTimeStart) > 0)
+                // If the end time is greater than the start time, do the normal compare (start > currentTime > end)
+                // If the end time is less than the start time, then if the current time is greater than the start time we are good, or if the current time is less than than end time we are good.
+                if((m_settings.SleepyTimeEnd.CompareTo(m_settings.SleepyTimeStart) > 0 && now.CompareTo(m_settings.SleepyTimeStart) > 0 && now.CompareTo(m_settings.SleepyTimeEnd) < 0) ||
+                   (m_settings.SleepyTimeEnd.CompareTo(m_settings.SleepyTimeStart) < 0 && (now.CompareTo(m_settings.SleepyTimeStart) > 0 || now.CompareTo(m_settings.SleepyTimeEnd) < 0)))
                 {
                     desiredIntensity = m_settings.SleepyTimeIntensity;
                 }
@@ -74,14 +77,16 @@ namespace GlowPi.Programs
                     desiredIntensity = m_settings.MasterIntensity;
                 }
 
-                double currentIntensity = m_controller.GetMasterIntensity();
-                if(desiredIntensity != currentIntensity)
+                // Clamp the intensity
+                desiredIntensity = Math.Min(1.0, Math.Max(0, desiredIntensity));
+
+                // Check to see if we need to update the intensity. Note we always want to do it now
+                // if this was from a user action, but if not we don't want to do it if we are already
+                // running the animation.
+                if(desiredIntensity != m_controller.GetMasterIntensity() &&
+                    (m_userActionCycle || !m_controller.IsMasterIntensityAnimating()))
                 {
-                    // #todo account for tick time here.
-                    double diff = currentIntensity - desiredIntensity;
-                    diff = Math.Max(-.05, Math.Min(.05, diff));
-                    currentIntensity -= diff;
-                    m_controller.SetMasterIntensity(currentIntensity);
+                    m_controller.AnimateMasterIntensity(desiredIntensity, m_userActionCycle ? new TimeSpan(0,0,0,0,200) : new TimeSpan(0, 0, 10));
                 }
 
                 GlowPrograms runningProgram = GlowPrograms.None;
@@ -171,6 +176,7 @@ namespace GlowPi.Programs
 
                 // Reset the timers
                 m_nextCycleTimeMs = (int)m_settings.ProgramCycleTimeMs;
+                m_userActionCycle = false;
             }
         }
 
@@ -207,6 +213,7 @@ namespace GlowPi.Programs
 
             // Set the work time to something that will make it operate next time.
             m_nextCycleTimeMs = -10;
+            m_userActionCycle = true;
         }
         
         private void GoToSleepState()

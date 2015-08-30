@@ -229,6 +229,7 @@ namespace GlowPi.Programs
             led.Animate(wind, wind, 1.0, 1, TimeSpan.FromSeconds(1), AnimationType.Linear);
         }
 
+#pragma warning disable CS0649
         class Temp
         {
             public int fahrenheit;          
@@ -262,5 +263,6 @@ namespace GlowPi.Programs
         {
             public Forcast forecast;
         }
+#pragma warning restore
     }
 }

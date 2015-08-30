@@ -19,8 +19,10 @@ namespace GlowPi.Interfaces
 
         bool IsProgramEnabled(GlowPrograms program);
 
-        void SetMasterIntensity(double intensity);
+        void AnimateMasterIntensity(double intensity, TimeSpan animationTime);
 
         double GetMasterIntensity();
+
+        bool IsMasterIntensityAnimating();
     }
 }

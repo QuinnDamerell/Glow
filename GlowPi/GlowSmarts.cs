@@ -119,15 +119,22 @@ namespace GlowPi
         {
             return m_ledController.GetMasterIntensity();
         }
-        
-        public void SetMasterIntensity(double intensity)
+
+        public void AnimateMasterIntensity(double intensity, TimeSpan animationTime)
         {
-            m_ledController.SetMasterIntensity(intensity);
+            m_ledController.AnimateMasterIntensity(intensity, animationTime);
+        }
+
+        public bool IsMasterIntensityAnimating()
+        {
+            return m_ledController.IsMasterIntensityAnimating();
         }
 
         // Called from the programs to change the work callback rate
         public void SetWorkRate(uint workRateMs)
         {
+            // Make sure we at least cycle once a second.
+            workRateMs = Math.Min(1000, workRateMs);
             m_workRateMs = workRateMs;
         }
 
