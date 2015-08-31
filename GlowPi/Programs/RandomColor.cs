@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GlowCommon.DataObjects;
 using GlowCommon;
+using WindowsIotLedDriver;
 
 namespace GlowPi.Programs
 {
@@ -15,6 +16,10 @@ namespace GlowPi.Programs
         RandomColorSettings m_settings = new RandomColorSettings(true);
         int[] m_expireTime = new int[5];
         Random m_random;
+
+        double[] m_redRange = { 1, 1, 0, 0, 0, 1 };
+        double[] m_blueRange = { 0, 1, 1, 1, 0, 0 };
+        double[] m_greenRange = { 0, 0, 0, 1, 1, 1 };
 
         public GlowPrograms GlowProgram { get; private set; }
 
@@ -54,7 +59,7 @@ namespace GlowPi.Programs
 
                     // Create the animation time.
                     int animationTime = m_random.Next(m_settings.TransistionMinMs, m_settings.TransistionMaxMs);
-                    m_controller.GetLed(i).Animate(m_random.NextDouble(), m_random.NextDouble(), m_random.NextDouble(), 1, TimeSpan.FromMilliseconds(animationTime), WindowsIotLedDriver.AnimationType.Linear);
+                    SetColor(m_controller.GetLed(i), m_random.NextDouble(), TimeSpan.FromMilliseconds(animationTime));                   
                 }                    
             }
         }
@@ -96,6 +101,41 @@ namespace GlowPi.Programs
 
             // Set the new settings
             m_settings = newSettings;
+        }
+
+        private void SetColor(AnimatedLed led, double value, TimeSpan time)
+        {
+            double red = 0, green = 0, blue = 0;
+
+            // Wrap the value if we hit 1.
+            if (value == 1)
+            {
+                value = 0;
+            }
+
+            // Find what bucket we are in
+            int rangeBot = (int)Math.Floor(((value) * m_blueRange.Length));
+            int rangeTop = rangeBot + 1;
+            if (rangeTop == m_blueRange.Length)
+            {
+                rangeTop = 0;
+            }
+
+            // Find where we are in that bucket-
+            double placeInRange = ((value * m_blueRange.Length * m_blueRange.Length) % m_blueRange.Length) / 6.0;
+            if (value == 1.0)
+            {
+                // Special case
+                placeInRange = 1;
+            }
+
+            // Find the values per color
+            red = m_redRange[rangeBot] + (m_redRange[rangeTop] - m_redRange[rangeBot]) * placeInRange;
+            green = m_greenRange[rangeBot] + (m_greenRange[rangeTop] - m_greenRange[rangeBot]) * placeInRange;
+            blue = m_blueRange[rangeBot] + (m_blueRange[rangeTop] - m_blueRange[rangeBot]) * placeInRange;
+
+            // Animate the LED
+            led.Animate(red, green, blue, 1.0, time, AnimationType.Linear);
         }
     }
 }

@@ -94,9 +94,19 @@ namespace GlowPi.Programs
         {
             double red = 0, green = 0, blue = 0;
 
+            // Wrap the value if we hit 1.
+            if (value == 1)
+            {
+                value = 0;
+            }
+
             // Find what bucket we are in
-            int rangeBot = (int)Math.Floor(Math.Abs(((value - .001) * m_blueRange.Length-1)));
-            int rangeTop = (int)Math.Floor(Math.Abs(((value - .001) * m_blueRange.Length-1)))+1;
+            int rangeBot = (int)Math.Floor(((value) * m_blueRange.Length));
+            int rangeTop = rangeBot + 1;
+            if (rangeTop == m_blueRange.Length)
+            {
+                rangeTop = 0;
+            }
 
             // Find where we are in that bucket-
             double placeInRange = ((value * m_blueRange.Length * m_blueRange.Length) % m_blueRange.Length) / 6.0;
